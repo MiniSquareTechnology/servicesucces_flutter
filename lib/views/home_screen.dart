@@ -4,6 +4,7 @@ import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/app_sizer.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
+import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen>
           backgroundColor: Colors.white,
           body: Padding(
             padding:
-                EdgeInsets.symmetric(horizontal: AppSizer.commonSidePadding),
+                EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen>
                         )),
                 ),
                 context.getCommonSizedBox,
-                context.getCommonSizedBox,
+                // context.getCommonSizedBox,
                 context.getCommonSizedBox,
                 Container(
                   width: 1.0.sw,
@@ -156,12 +157,12 @@ class _HomeScreenState extends State<HomeScreen>
                 context.getCommonSizedBox,
 
                 Obx(() => homeViewModel.showArrival.value ? context.getCommonSizedBox : Container()),
-                Obx(() => homeViewModel.showArrival.value ? context.getCommonSizedBox: Container()),
+                // Obx(() => homeViewModel.showArrival.value ? context.getCommonSizedBox: Container()),
                 Obx(() => homeViewModel.showArrival.value ? Container(
                   width: 1.0.sw,
                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
                   decoration: BoxDecoration(
-                      color: Colors.amber.shade200,
+                      color: ColorPalette.appPrimaryColor,
                       borderRadius: BorderRadius.circular(10.r)
                   ),
                   child: Column(
@@ -170,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen>
                       Text(
                         "Arrival time",
                         style: TextStyle(
-                            color: ColorPalette.appPrimaryColor,
+                            color: ColorPalette.appSecondaryColor,
                             fontSize: 16.sp,
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500),
@@ -179,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
                       Text(
                         "${DateFormat().add_jms().format(DateTime.now())} ${DateFormat().add_yMMMMEEEEd().format(DateTime.now())}",
                         style: TextStyle(
-                            color: ColorPalette.appPrimaryColor,
+                            color: ColorPalette.appSecondaryColor,
                             fontSize: 13.sp,
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400),
@@ -203,7 +204,36 @@ class _HomeScreenState extends State<HomeScreen>
                               homeViewModel.totalHours.value, 'Total Hours'),
                         ],
                       )),
-                )
+                ),
+                context.getCommonSizedBox,
+                Obx(() => homeViewModel.showArrival.value ? InkWell(
+                  onTap: () {
+                    Get.toNamed(RoutePathConstants.jobFormScreen);
+                  },
+                  child: Container(
+                    width: 1.0.sw,
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+                    decoration: BoxDecoration(
+                        color: ColorPalette.appPrimaryColor,
+                        borderRadius: BorderRadius.circular(10.r)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Job Form",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Icon(Icons.arrow_forward, color: ColorPalette.appSecondaryColor,)
+                      ],
+                    ),
+                  ),
+                ) : Container()),
               ],
             ),
           ),
@@ -218,13 +248,13 @@ class _HomeScreenState extends State<HomeScreen>
         decoration: BoxDecoration(
           color: ColorPalette.appPrimaryColor,
           borderRadius: BorderRadius.circular(100.0),
-          boxShadow: [
+          /*boxShadow: [
             BoxShadow(
               color: Colors.amber.shade200,
               blurRadius: 30.0,
               offset: const Offset(0.0, 5.0),
             ),
-          ],
+          ],*/
           /*gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -323,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen>
           return Container(
             // height: 228.h,
             padding: EdgeInsets.symmetric(
-                horizontal: AppSizer.commonSidePadding, vertical: 22.h),
+                horizontal: 20.w, vertical: 22.h),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(

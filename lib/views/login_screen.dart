@@ -1,6 +1,6 @@
 import 'package:employee_clock_in/res/custom_widgets/app_textfield.dart';
 import 'package:employee_clock_in/res/custom_widgets/buttons/app_filled_button.dart';
-import 'package:employee_clock_in/res/utils/app_sizer.dart';
+
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
             Container(
               width: 1.0.sw,
               margin: EdgeInsets.only(top: 0.18.sh),
-              padding: EdgeInsets.symmetric(horizontal: AppSizer.commonSidePadding),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(

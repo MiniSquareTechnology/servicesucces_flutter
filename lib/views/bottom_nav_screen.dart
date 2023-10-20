@@ -54,7 +54,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     activeIconColor: Colors.white,
                     activeTitleColor: Colors.white,
                     inactiveColor: Colors.white,
-                    backgroundColorOpacity: 0.8),
+                    // backgroundColorOpacity: 0.8
+                ),
                 BottomBarItem(
                     icon: Icon(Icons.list, color: Colors.white, size: 24.w),
                     title: const Text('History'),
@@ -62,7 +63,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     activeIconColor: Colors.white,
                     activeTitleColor: Colors.white,
                     inactiveColor: Colors.white,
-                    backgroundColorOpacity: 0.8),
+                    // backgroundColorOpacity: 0.8
+                ),
                 BottomBarItem(
                     icon: Icon(Icons.settings, color: Colors.white, size: 24.w),
                     title: const Text('Settings'),
@@ -70,7 +72,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     activeIconColor: Colors.white,
                     activeTitleColor: Colors.white,
                     inactiveColor: Colors.white,
-                    backgroundColorOpacity: 0.8),
+                    // backgroundColorOpacity: 0.8
+                ),
               ],
             ),
           ),

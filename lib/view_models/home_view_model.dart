@@ -56,8 +56,9 @@ class HomeViewModel extends GetxController {
     punchOut = DateTime.now();
     checkOutTimer.value = DateFormat().add_jm().format(DateTime.now());
     _reset();
-    buttonStatus.value = "Done";
+    buttonStatus.value = "Dispatch";
     checkInStart.value = false;
+    showArrival.value = false;
     // totalHours.value =
     //     Duration(minutes: punchOut!.difference(punchIn!).inMinutes)
     //         .getHoursAndMinutes;

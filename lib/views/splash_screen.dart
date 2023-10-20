@@ -1,4 +1,4 @@
-import 'package:employee_clock_in/res/utils/app_sizer.dart';
+
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +19,10 @@ class SplashScreen extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: AppSizer.commonSidePadding),
+              horizontal: 20.w),
           child: Text(
-            "Mini Square Technologies",
-            // "Service Success Pros",
+            // "Mini Square Technologies",
+            "Service Success Pros",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 26.sp,

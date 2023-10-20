@@ -22,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           body: Padding(
             padding:
-            EdgeInsets.symmetric(horizontal: AppSizer.commonSidePadding),
+            EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,7 +82,7 @@ class SettingsScreen extends StatelessWidget {
         width: 1.0.sw,
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         decoration: BoxDecoration(
-            color: Colors.amber.shade200,
+            color: ColorPalette.appPrimaryColor,
             borderRadius: BorderRadius.circular(10.r)
         ),
         child: Row(
@@ -91,14 +91,14 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: ColorPalette.appPrimaryColor,
+              color: ColorPalette.appSecondaryColor,
               size: 26.w,
             ),
             SizedBox(width: 10.w),
             Text(
               title,
               style: TextStyle(
-                  color: ColorPalette.appPrimaryColor,
+                  color: ColorPalette.appSecondaryColor,
                   fontSize: 18.sp,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w500),

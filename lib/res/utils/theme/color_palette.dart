@@ -12,7 +12,7 @@ class ColorPalette {
   static Color failureTextColor = const Color(0xFFF84444);
 
   static Color appPrimaryColor = const Color(0xFF002e6e);
-  static Color appSecondaryColor = Colors.amber.shade400;
+  static Color appSecondaryColor = Colors.white;
   // text style colours
 
   static Color grey80 = const Color(0xFF868686);

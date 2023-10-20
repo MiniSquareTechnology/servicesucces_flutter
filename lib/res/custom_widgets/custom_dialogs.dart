@@ -12,7 +12,7 @@ class CustomDialogs {
     showGeneralDialog(
       context: context,
       barrierLabel: "",
-      barrierDismissible: true,
+      barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (_, __, ___) {
@@ -22,7 +22,7 @@ class CustomDialogs {
           child: Container(
             // height: 228.h,
             padding: EdgeInsets.symmetric(
-                horizontal: AppSizer.commonSidePadding, vertical: 12.h),
+                horizontal: 20.w, vertical: 12.h),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(20.r))),
@@ -31,10 +31,8 @@ class CustomDialogs {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  height: 10.h,
-                ),
-                Row(
+                context.getCommonSizedBox,
+               /* Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Enter job name to Punch In",
@@ -61,15 +59,25 @@ class CustomDialogs {
                 ),
                 SizedBox(
                   height: 14.h,
-                ),
+                ),*/
                 AppTextField(
                   // controller: emailController,
-                  // title: "Job Name",
-                  hint: "John doe",
+                  title: "Customer Name",
+                  hint: "Enter Customer Name",
                   keyboardType: TextInputType.text,
                   validator: (value) =>
                       Validators.emptyValidator(value!.trim()),
                 ),
+                context.getCommonSizedBox,
+                AppTextField(
+                  // controller: emailController,
+                  title: "Service Titan Number",
+                  hint: "Enter Service Titan Number",
+                  keyboardType: TextInputType.text,
+                  validator: (value) =>
+                      Validators.emptyValidator(value!.trim()),
+                ),
+                context.getCommonSizedBox,
                 context.getCommonSizedBox,
                 AppFilledButton(
                     text: "Start",

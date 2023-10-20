@@ -52,7 +52,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: AppSizer.commonSidePadding),
+                    horizontal: 20.w),
                 child: TableCalendar(
                   firstDay: kFirstDay,
                   lastDay: kLastDay,
@@ -131,25 +131,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 color: ColorPalette.appPrimaryColor,
                 margin: EdgeInsets.symmetric(vertical: 10.h),
               ),
-              SizedBox(
-                height: 0.43.sh,
-                child: ListView(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: AppSizer.commonSidePadding),
-                  children: [
-                    for (int i = 0; i < listLength + 1; i++)
-                      historyItemRow(
-                          daysTitle.elementAt(i).split(" ")[0],
-                          daysTitle.elementAt(i).split(" ")[1],
-                          '09:10 AM',
-                          '06:10 AM',
-                          '09:00:00',
-                          (i % 2 == 0)
-                              ? ColorPalette.appPrimaryColor
-                              : ColorPalette.appSecondaryColor),
-                  ],
-                ),
-              )
+              Expanded(
+                  child: ListView.builder(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.w),
+                      itemCount: listLength + 1,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (itemBuilderContext, index) {
+                        return historyItemRow(
+                            daysTitle.elementAt(index).split(" ")[0],
+                            daysTitle.elementAt(index).split(" ")[1],
+                            '09:10 AM',
+                            '06:10 AM',
+                            '09:00:00',
+                            (index % 2 == 0)
+                                ? ColorPalette.appPrimaryColor
+                                : ColorPalette.appSecondaryColor);
+                      })),
             ],
           ),
         ),
@@ -207,7 +205,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               height: 55.w,
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               decoration: BoxDecoration(
-                color: ColorPalette.appSecondaryColor.withOpacity(0.5),
+                color: ColorPalette.appPrimaryColor.withOpacity(0.8),
                 // color: dayBgColor.withOpacity(0.5),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10.r),
@@ -240,7 +238,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           style: TextStyle(
               fontSize: 10.sp,
               fontWeight: FontWeight.w500,
-              color: Colors.black),
+              color: Colors.white),
         ),
         SizedBox(height: 5.h),
         Text(
@@ -248,7 +246,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           style: TextStyle(
               fontSize: 10.sp,
               fontWeight: FontWeight.w500,
-              color: Colors.black),
+              color: Colors.white),
         ),
       ],
     );
