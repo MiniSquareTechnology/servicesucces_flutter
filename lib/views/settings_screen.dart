@@ -1,16 +1,22 @@
+import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
-import 'package:employee_clock_in/res/utils/app_sizer.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
+import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
+import 'package:employee_clock_in/view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
+
 // import 'dart:math' as math;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  SettingsScreen({super.key});
+
+  final AuthViewModel authViewModel =
+      Get.find(tag: AppBinding.authViewModelTag);
 
   //              Transform.rotate(angle: - math.pi / 4, child: Image.asset(ImageStorage.loginLogo))
   @override
@@ -21,8 +27,7 @@ class SettingsScreen extends StatelessWidget {
         child: Scaffold(
           backgroundColor: Colors.white,
           body: Padding(
-            padding:
-            EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,19 +56,12 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 context.getCommonSizedBox,
                 context.getCommonSizedBox,
-                itemRow("Change Password", Icons.password, (){
+                itemRow("Change Password", Icons.password, () {
                   Get.toNamed(RoutePathConstants.changePasswordScreen);
                 }),
                 context.getCommonSizedBox,
                 itemRow("Logout", Icons.logout_rounded, () {
-                  CustomDialogs.showYesNoDialog(
-                      context, "Are you want to Logout this Account.",
-                      onYesTap: () {
-                        Get.back();
-                        Get.offAllNamed(RoutePathConstants.loginScreen);
-                      }, onNoTap: () {
-                    Get.back();
-                  });
+                  logoutBtnClick();
                 })
               ],
             ),
@@ -83,8 +81,7 @@ class SettingsScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         decoration: BoxDecoration(
             color: ColorPalette.appPrimaryColor,
-            borderRadius: BorderRadius.circular(10.r)
-        ),
+            borderRadius: BorderRadius.circular(10.r)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,5 +110,21 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void logoutBtnClick() async {
+    CustomDialogs.showYesNoDialog(
+        Get.context!, "Are you want to Logout this Account.",
+        onYesTap: () async {
+      Get.back();
+
+      bool res = await authViewModel.logOutClick();
+      if (res) {
+        AppPreferenceStorage.clearPreference();
+        Get.offAllNamed(RoutePathConstants.loginScreen);
+      }
+    }, onNoTap: () {
+      Get.back();
+    });
   }
 }

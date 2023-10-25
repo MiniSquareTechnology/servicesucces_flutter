@@ -217,4 +217,42 @@ class CustomDialogs {
           );
         });
   }
+
+  void showErrorDialog(BuildContext context, String title,
+      {GestureTapCallback? onTap, String? message}) {
+    ///if error code is more 10000, we will show session expired download
+    showDialog(
+        context: context,
+        builder: (_) {
+          return Dialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            child: Padding(
+              padding: EdgeInsets.all(25.h),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: ColorPalette.primaryColor100),
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  AppFilledButton(
+                    text: "Okay",
+                    width: 200.w,
+                    onTap: () => onTap!(),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
 }

@@ -26,9 +26,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         body: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            HomeScreen(),
-            HistoryScreen(),
+          children:  [
+            const HomeScreen(),
+            const HistoryScreen(),
             SettingsScreen(),
           ],
           onPageChanged: (index) {

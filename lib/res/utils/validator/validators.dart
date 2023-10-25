@@ -22,7 +22,7 @@ class Validators {
     if (password.isEmpty) {
       return "This field cannot be empty";
     } else if (!regExp.hasMatch(password)) {
-      return "Password doesn't match";
+      return "Password should be like Example@123";
     }
   }
 
