@@ -23,13 +23,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController emailController = TextEditingController();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late AuthViewModel authViewModel;
 
   @override
   void initState() {
     authViewModel = Get.find(tag: AppBinding.authViewModelTag);
+    authViewModel.resetValues();
     super.initState();
   }
 
@@ -96,15 +97,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           Validators.emailValidator(email!.trim()),
                     ),
                     context.getCommonSizedBox,
-                    AppTextField(
-                      controller: passwordController,
-                      title: "Password",
-                      hint: "Enter Password",
-                      keyboardType: TextInputType.text,
-                      isObscure: true,
-                      validator: (pass) =>
-                          Validators.emptyValidator(pass!.trim()),
-                    ),
+                    Obx(() => AppTextField(
+                          controller: passwordController,
+                          title: "Password",
+                          hint: "Enter Password",
+                          keyboardType: TextInputType.text,
+                          isObscure: authViewModel.getPasswordObscureValue,
+                          validator: (pass) =>
+                              Validators.emptyValidator(pass!.trim()),
+                          suffix: InkWell(
+                            onTap: () {
+                              authViewModel.updatePasswordObscureValue();
+                            },
+                            child: Icon(
+                                authViewModel.getPasswordObscureValue
+                                    ? Icons.visibility_off_sharp
+                                    : Icons.visibility_sharp,
+                                color: ColorPalette.primaryColor100),
+                          ),
+                        )),
                     context.getCommonSizedBox,
                     context.getCommonSizedBox,
                     AppFilledButton(

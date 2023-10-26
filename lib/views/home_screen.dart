@@ -3,6 +3,7 @@ import 'package:employee_clock_in/data/services/location_service.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/app_sizer.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
+import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
@@ -23,8 +24,8 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late double _scale;
   late AnimationController _controller;
-
   late HomeViewModel homeViewModel;
+  String userName = "";
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen>
         setState(() {});
       });
     super.initState();
+    getUserDetails();
   }
 
   @override
@@ -73,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Hey William!",
+                          userName,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 18.sp,
@@ -444,5 +446,16 @@ class _HomeScreenState extends State<HomeScreen>
       //   debugPrint("<<----- $speedInMps");
       // });
     });
+  }
+
+  void getUserDetails() async {
+    userName = await AppPreferenceStorage.getStringValuesSF(
+        AppPreferenceStorage.userName) ??
+        "Hey William!";
+    if(mounted) {
+      setState(() {
+
+      });
+    }
   }
 }

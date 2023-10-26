@@ -18,22 +18,20 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-   TextEditingController currentPasswordController =
-      TextEditingController();
+  TextEditingController currentPasswordController = TextEditingController();
 
-   TextEditingController newPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
 
-   TextEditingController conformPasswordController =
-      TextEditingController();
+  TextEditingController conformPasswordController = TextEditingController();
 
-   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late AuthViewModel authViewModel;
 
   @override
   void initState() {
-    authViewModel =
-        Get.find(tag: AppBinding.authViewModelTag);
+    authViewModel = Get.find(tag: AppBinding.authViewModelTag);
+    authViewModel.resetValues();
     super.initState();
   }
 
@@ -70,35 +68,63 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 children: [
                   context.getCommonSizedBox,
                   context.getCommonSizedBox,
-                  AppTextField(
-                    controller: currentPasswordController,
-                    title: "Current Password",
-                    hint: "Enter current password",
-                    keyboardType: TextInputType.text,
-                    isObscure: true,
-                    validator: (pass) =>
-                        Validators.emptyValidator(pass!.trim()),
-                  ),
+                  Obx(() => AppTextField(
+                      controller: currentPasswordController,
+                      title: "Current Password",
+                      hint: "Enter current password",
+                      keyboardType: TextInputType.text,
+                      isObscure: authViewModel.getOldPasswordObscureValue,
+                      validator: (pass) =>
+                          Validators.passwordLengthValidator(pass!.trim()),
+                      suffix: InkWell(
+                        onTap: () {
+                          authViewModel.updateOldPasswordObscureValue();
+                        },
+                        child: Icon(
+                            authViewModel.getOldPasswordObscureValue
+                                ? Icons.visibility_off_sharp
+                                : Icons.visibility_sharp,
+                            color: ColorPalette.primaryColor100),
+                      ))),
                   context.getCommonSizedBox,
-                  AppTextField(
-                    controller: newPasswordController,
-                    title: "New Password",
-                    hint: "Enter new password",
-                    keyboardType: TextInputType.text,
-                    isObscure: true,
-                    validator: (pass) =>
-                        Validators.emptyValidator(pass!.trim()),
-                  ),
+                  Obx(() => AppTextField(
+                      controller: newPasswordController,
+                      title: "New Password",
+                      hint: "Enter new password",
+                      keyboardType: TextInputType.text,
+                      isObscure: authViewModel.getNewPasswordObscureValue,
+                      validator: (pass) =>
+                          Validators.passwordLengthValidator(pass!.trim()),
+                      suffix: InkWell(
+                        onTap: () {
+                          authViewModel.updateNewPasswordObscureValue();
+                        },
+                        child: Icon(
+                            authViewModel.getNewPasswordObscureValue
+                                ? Icons.visibility_off_sharp
+                                : Icons.visibility_sharp,
+                            color: ColorPalette.primaryColor100),
+                      ))),
                   context.getCommonSizedBox,
-                  AppTextField(
-                    controller: conformPasswordController,
-                    title: "Confirm Password",
-                    hint: "Enter confirm password",
-                    keyboardType: TextInputType.text,
-                    isObscure: true,
-                    validator: (pass) =>
-                        Validators.emptyValidator(pass!.trim()),
-                  ),
+                  Obx(() => AppTextField(
+                        controller: conformPasswordController,
+                        title: "Confirm Password",
+                        hint: "Enter confirm password",
+                        keyboardType: TextInputType.text,
+                        isObscure: authViewModel.getConfirmPasswordObscureValue,
+                        validator: (pass) =>
+                            Validators.passwordConfirmValidator(newPasswordController.text.trim(), pass!.trim()),
+                        suffix: InkWell(
+                          onTap: () {
+                            authViewModel.updateConfirmPasswordObscureValue();
+                          },
+                          child: Icon(
+                              authViewModel.getConfirmPasswordObscureValue
+                                  ? Icons.visibility_off_sharp
+                                  : Icons.visibility_sharp,
+                              color: ColorPalette.primaryColor100),
+                        ),
+                      )),
                   context.getCommonSizedBox,
                   context.getCommonSizedBox,
                   AppFilledButton(
@@ -123,7 +149,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           conformPasswordController.text.trim());
 
       if (res) {
-        CustomDialogs().showErrorDialog(Get.context!, 'Password updated successfully', onTap: () {
+        CustomDialogs().showErrorDialog(
+            Get.context!, 'Password updated successfully', onTap: () {
           Get.back();
           Get.back();
         });

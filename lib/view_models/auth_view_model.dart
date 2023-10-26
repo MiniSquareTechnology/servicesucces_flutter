@@ -9,6 +9,48 @@ import 'package:get/get.dart';
 class AuthViewModel extends GetxController {
   AuthRepository authRepository = AuthRepository();
 
+  /// login
+  var passwordObscure = true.obs;
+
+  bool get getPasswordObscureValue => passwordObscure.value;
+
+  void updatePasswordObscureValue() {
+    passwordObscure.value = !passwordObscure.value;
+  }
+
+  /// update password
+  var oldPasswordObscureValue = true.obs;
+
+  bool get getOldPasswordObscureValue => oldPasswordObscureValue.value;
+
+  var newPasswordObscure = true.obs;
+
+  bool get getNewPasswordObscureValue => newPasswordObscure.value;
+
+  var confirmPasswordObscure = true.obs;
+
+  bool get getConfirmPasswordObscureValue => confirmPasswordObscure.value;
+
+  void updateOldPasswordObscureValue() {
+    oldPasswordObscureValue.value = !oldPasswordObscureValue.value;
+  }
+
+  void updateNewPasswordObscureValue() {
+    newPasswordObscure.value = !newPasswordObscure.value;
+  }
+
+  void updateConfirmPasswordObscureValue() {
+    confirmPasswordObscure.value = !confirmPasswordObscure.value;
+  }
+
+  void resetValues() {
+    passwordObscure.value = true;
+    oldPasswordObscureValue.value = true;
+    newPasswordObscure.value = true;
+    newPasswordObscure.value = true;
+    confirmPasswordObscure.value = true;
+  }
+
   Future<bool> emailLogin(String email, String password) async {
     try {
       CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
@@ -23,7 +65,7 @@ class AuthViewModel extends GetxController {
       }
     } on AppError catch (exception) {
       Get.back();
-      AppLogger.logMessage("------>>>>");
+      AppLogger.logMessage("------>>>> ${exception.code}");
       showErrorDialog(exception.message);
       return false;
     }

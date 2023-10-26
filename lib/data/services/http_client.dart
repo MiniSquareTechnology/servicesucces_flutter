@@ -163,7 +163,7 @@ class HttpClient {
         }
       }
     } on SocketException catch (e, s) {
-      AppLogger.logError("Error $e with trace $s");
+      AppLogger.logMessage("Error $e with trace $s");
       // ErrorLogging.log("http-library-impl", getUserId() + " - " + e.message);
       throw AppError(message: 'No Internet connection', code: 1);
     } on TimeoutException catch (e, s) {

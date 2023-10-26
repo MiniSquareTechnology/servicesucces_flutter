@@ -26,9 +26,17 @@ class Validators {
     }
   }
 
+  static passwordLengthValidator(String value) {
+    if (value.isEmpty) {
+      return "This field can't be empty";
+    } else if (value.length < 7) {
+      return "Password should be minimum 7 characters";
+    }
+  }
+
   static passwordConfirmValidator(String password, String confirmPassword) {
     if (password != confirmPassword) {
-      return "Password doesn't match";
+      return "Confirm Password doesn't match";
     }
   }
 

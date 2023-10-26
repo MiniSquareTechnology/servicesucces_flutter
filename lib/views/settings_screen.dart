@@ -12,11 +12,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   SettingsScreen({super.key});
 
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   final AuthViewModel authViewModel =
       Get.find(tag: AppBinding.authViewModelTag);
+  String userName = "";
+
+  @override
+  void initState() {
+    getUserDetails();
+    super.initState();
+  }
 
   //              Transform.rotate(angle: - math.pi / 4, child: Image.asset(ImageStorage.loginLogo))
   @override
@@ -47,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 context.getCommonSizedBox,
                 Text(
-                  "Hey William!",
+                  userName,
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 24.sp,
@@ -126,5 +138,16 @@ class SettingsScreen extends StatelessWidget {
     }, onNoTap: () {
       Get.back();
     });
+  }
+
+  void getUserDetails() async {
+    userName = await AppPreferenceStorage.getStringValuesSF(
+        AppPreferenceStorage.userName) ??
+        "Hey William!";
+    if(mounted) {
+      setState(() {
+
+      });
+    }
   }
 }
