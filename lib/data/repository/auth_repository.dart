@@ -9,7 +9,7 @@ class AuthRepository {
 
   Future<LoginResponseModel> loginWithEmail(Map<String, String> params) async {
     return await iClient.handleRequest(
-      apiEndpoint: ApiEndpointProvider().auth.emailLogin,
+      apiEndpoint: ApiEndpointProvider().authEndPoints.emailLogin,
       body: params,
       responseConverter: (json) => LoginResponseModel.fromJson(json),
     );
@@ -17,7 +17,7 @@ class AuthRepository {
 
   Future<LoginResponseModel> changePassword(Map<String, String> params) async {
     return await iClient.handleRequest(
-      apiEndpoint: ApiEndpointProvider().auth.changePassword,
+      apiEndpoint: ApiEndpointProvider().authEndPoints.changePassword,
       body: params,
       responseConverter: (json) => LoginResponseModel.fromJson(json),
     );
@@ -25,7 +25,7 @@ class AuthRepository {
 
 Future<LoginResponseModel> logOut() async {
   return await iClient.handleRequest(
-      apiEndpoint: ApiEndpointProvider().auth.logout,
+      apiEndpoint: ApiEndpointProvider().authEndPoints.logout,
       responseConverter: (json) => LoginResponseModel.fromJson(json));
 }
 }

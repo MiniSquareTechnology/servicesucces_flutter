@@ -5,7 +5,8 @@ class ApiEndpointProvider {
 
   ApiEndpointProvider();
 
-  final ApiAuthEndpoints auth = ApiAuthEndpoints();
+  final ApiAuthEndpoints authEndPoints = ApiAuthEndpoints();
+  final ApiHomeEndPoints homeEndPoints = ApiHomeEndPoints();
 }
 
 class ApiEndpoint {
@@ -32,4 +33,16 @@ class ApiAuthEndpoints {
 
   final ApiEndpoint logout = ApiEndpoint(
       path: "logout", method: RequestType.Get, needsAuthorization: true);
+}
+
+class ApiHomeEndPoints {
+  final ApiEndpoint addJob = ApiEndpoint(
+      path: "add-job",
+      method: RequestType.Post,
+      needsAuthorization: true);
+
+   ApiEndpoint updateJob(String jobId) => ApiEndpoint(
+      path: "update-job/$jobId",
+      method: RequestType.MultiPart,
+      needsAuthorization: true);
 }

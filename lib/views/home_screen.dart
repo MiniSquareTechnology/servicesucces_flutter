@@ -1,10 +1,9 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/data/services/location_service.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
-import 'package:employee_clock_in/res/utils/app_sizer.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
-import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
+import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
@@ -21,38 +20,51 @@ class HomeScreen extends StatefulWidget {
 }
 /// flutter build apk --release -v --no-tree-shake-icons
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  late double _scale;
-  late AnimationController _controller;
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver{
+
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController serviceTitanNumController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   late HomeViewModel homeViewModel;
-  String userName = "";
 
   @override
   void initState() {
     homeViewModel = Get.find(tag: AppBinding.homeViewModelTag);
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 200,
-      ),
-      lowerBound: 0.0,
-      upperBound: 0.2,
-    )..addListener(() {
-        setState(() {});
-      });
+    homeViewModel.getUserDetails();
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
-    getUserDetails();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+        debugPrint("Inactive");
+        break;
+      case AppLifecycleState.paused:
+        debugPrint("Paused");
+        break;
+      case AppLifecycleState.resumed:
+        debugPrint("Resumed");
+        break;
+      case AppLifecycleState.detached:
+        debugPrint("detached");
+        break;
+      default:
+        debugPrint("Suspending");
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _scale = 1 - _controller.value;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -74,14 +86,14 @@ class _HomeScreenState extends State<HomeScreen>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          userName,
+                        Obx(() => Text(
+                          homeViewModel.userName.value,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 18.sp,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w500),
-                        ),
+                        )),
                         Text(
                           "Good morning! Mark your attendance",
                           style: TextStyle(
@@ -150,10 +162,7 @@ class _HomeScreenState extends State<HomeScreen>
                     onTap: () {
                       mainBtnClick();
                     },
-                    child: Transform.scale(
-                      scale: _scale,
-                      child: _animatedButtonUI,
-                    ),
+                    child: _animatedButtonUI,
                   ),
                 ),
                 context.getCommonSizedBox,
@@ -180,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       SizedBox(height: 6.h),
                       Text(
-                        "${DateFormat().add_jms().format(DateTime.now())} ${DateFormat().add_yMMMMEEEEd().format(DateTime.now())}",
+                        homeViewModel.arrivalTimeText.value,
                         style: TextStyle(
                             color: ColorPalette.appSecondaryColor,
                             fontSize: 13.sp,
@@ -434,10 +443,14 @@ class _HomeScreenState extends State<HomeScreen>
 
   getLocation() {
     LocationService.determinePosition().then((value) {
-      debugPrint("--=> ${value.latitude} ${value.longitude}");
-      CustomDialogs.punchInDialog(context, () {
+      AppLogger.logMessage("--=> ${value.latitude} ${value.longitude}");
+      CustomDialogs.punchInDialog(
+          context, customerNameController, serviceTitanNumController, _formKey,
+          () {
+        AppLogger.logMessage(
+            "-=>>< ${customerNameController.text.trim()} -- ${serviceTitanNumController.text.trim()}");
         Get.back();
-        homeViewModel.setCheckInTime();
+        homeViewModel.setCheckInTime(customerNameController.text.trim(), serviceTitanNumController.text.trim());
       });
       /*StreamSubscription<Position> positionStream =*/
       // Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -448,14 +461,4 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  void getUserDetails() async {
-    userName = await AppPreferenceStorage.getStringValuesSF(
-        AppPreferenceStorage.userName) ??
-        "Hey William!";
-    if(mounted) {
-      setState(() {
-
-      });
-    }
-  }
 }

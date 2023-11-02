@@ -22,6 +22,8 @@ class AppPreferenceStorage {
   static String selectedCountry = 'selectedCountry';
   static String deviceToken = 'deviceToken';
 
+  static String jobId = 'jobId';
+
   static setStringValuesSF(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);

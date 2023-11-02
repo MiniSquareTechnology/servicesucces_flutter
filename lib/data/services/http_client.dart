@@ -37,7 +37,6 @@ class HttpClient {
     RequestType request = apiEndpoint.method;
     bool needAuthorization = apiEndpoint.needsAuthorization;
     if (needAuthorization) {
-      //TODO add header token here
       String token = await AppPreferenceStorage.getStringValuesSF(
               AppPreferenceStorage.authToken) ??
           "";
@@ -80,12 +79,15 @@ class HttpClient {
             var reguest = http.MultipartRequest('POST', url);
             reguest.fields.addAll(body);
             reguest.headers.addAll(headers);
-            for (int i = 0; i < parts!.length; i++) {
-              reguest.files.add(await http.MultipartFile.fromPath(
-                parts.keys.toList()[i],
-                parts.values.toList()[i].path,
-              ));
+            if(parts != null) {
+              for (int i = 0; i < parts.length; i++) {
+                reguest.files.add(await http.MultipartFile.fromPath(
+                  parts.keys.toList()[i],
+                  parts.values.toList()[i].path,
+                ));
+              }
             }
+
             http.StreamedResponse streamedResponse = await reguest.send();
             response = await Response.fromStream(streamedResponse);
             break;
