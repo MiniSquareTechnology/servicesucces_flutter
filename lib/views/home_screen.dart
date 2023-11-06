@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     homeViewModel = Get.find(tag: AppBinding.homeViewModelTag);
     homeViewModel.getUserDetails();
+    // homeViewModel.getJobStatus();
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen>
         debugPrint("Resumed");
         break;
       case AppLifecycleState.detached:
-        debugPrint("detached");
+        debugPrint("detached:-=>  ${homeViewModel.timerText.value}");
         break;
       default:
         debugPrint("Suspending");
@@ -287,6 +288,7 @@ class _HomeScreenState extends State<HomeScreen>
             SizedBox(height: 10.h),
             Obx(() => Text(
                   homeViewModel.buttonStatus.value,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
@@ -334,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   void mainBtnClick() {
     if (homeViewModel.checkInStart.value) {
-      if(homeViewModel.buttonStatus.value.compareTo("Arrive") == 0) {
+      if(homeViewModel.buttonStatus.value.compareTo("Click to \nArrive") == 0) {
         homeViewModel.updateArrival();
       } else {
         CustomDialogs.showYesNoDialog(
@@ -442,6 +444,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   getLocation() {
+    customerNameController.text = "";
+    serviceTitanNumController.text = "";
     LocationService.determinePosition().then((value) {
       AppLogger.logMessage("--=> ${value.latitude} ${value.longitude}");
       CustomDialogs.punchInDialog(

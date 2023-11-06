@@ -69,6 +69,8 @@ class AddJobResponseData {
     String? updatedAt,
     String? createdAt,
     num? id,
+    String? comission,
+    String? totalAmount
   }) {
     _customerName = customerName;
     _serviceTitanNumber = serviceTitanNumber;
@@ -80,6 +82,8 @@ class AddJobResponseData {
     _updatedAt = updatedAt;
     _createdAt = createdAt;
     _id = id;
+    _comission = comission;
+    _totalAmount = totalAmount;
   }
 
   AddJobResponseData.fromJson(dynamic json) {
@@ -93,6 +97,8 @@ class AddJobResponseData {
     _updatedAt = json['updated_at'];
     _createdAt = json['created_at'];
     _id = json['id'];
+    _comission = json['comission'];
+    _totalAmount = json['total_amount'];
   }
 
   String? _customerName;
@@ -105,6 +111,8 @@ class AddJobResponseData {
   String? _updatedAt;
   String? _createdAt;
   num? _id;
+  String? _comission;
+  String? _totalAmount;
 
   AddJobResponseData copyWith({
     String? customerName,
@@ -117,6 +125,8 @@ class AddJobResponseData {
     String? updatedAt,
     String? createdAt,
     num? id,
+    String? comission,
+    String? totalAmount
   }) =>
       AddJobResponseData(
         customerName: customerName ?? _customerName,
@@ -129,6 +139,8 @@ class AddJobResponseData {
         updatedAt: updatedAt ?? _updatedAt,
         createdAt: createdAt ?? _createdAt,
         id: id ?? _id,
+        comission: comission ?? _comission,
+        totalAmount: totalAmount ?? _totalAmount,
       );
 
   String? get customerName => _customerName;
@@ -151,6 +163,10 @@ class AddJobResponseData {
 
   num? get id => _id;
 
+  String? get comission => _comission;
+
+  String? get totalAmount => _totalAmount;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['customer_name'] = _customerName;
@@ -163,6 +179,8 @@ class AddJobResponseData {
     map['updated_at'] = _updatedAt;
     map['created_at'] = _createdAt;
     map['id'] = _id;
+    map['comission'] = _comission;
+    map['total_amount'] = _totalAmount;
     return map;
   }
 }

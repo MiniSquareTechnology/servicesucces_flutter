@@ -22,7 +22,14 @@ class AppPreferenceStorage {
   static String selectedCountry = 'selectedCountry';
   static String deviceToken = 'deviceToken';
 
+  static String customerName = 'customerName';
+  static String serviceTitanNumber = 'serviceTitanNumber';
+  static String isJobRunning = 'isJobRunning';
+  static String jobStatus = 'jobStatus';
+  static String jobFormUpdateId = 'jobFormUpdateId';
   static String jobId = 'jobId';
+  static String totalTime = 'totalTime';
+  static String checkInTime = 'CheckInTime';
 
   static setStringValuesSF(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -70,9 +77,19 @@ class AppPreferenceStorage {
     return doubleValue;
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  static Future<bool> containKey(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey(key);
+  }
+
+  static Future<bool> deleteKey(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.remove(key);
+  }
+
   static Future<bool> clearPreference() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-
     return await preferences.clear();
   }
 }

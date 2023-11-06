@@ -1,9 +1,13 @@
-import 'package:employee_clock_in/res/utils/app_sizer.dart';
+import 'package:employee_clock_in/data/binding/app_binding.dart';
+import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/utils/calendar_data.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
+import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
+import 'package:employee_clock_in/view_models/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -27,6 +31,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
   // DateFormat dateFormat2 = DateFormat("d");
   int listLength = -1;
   List<String> daysTitle = [];
+  late HomeViewModel homeViewModel;
+
+  @override
+  void initState() {
+    homeViewModel = Get.find(tag: AppBinding.homeViewModelTag);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      homeViewModel.getJobHistory(
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()));
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +67,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
           body: Column(
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 20.w),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: TableCalendar(
                   firstDay: kFirstDay,
-                  lastDay: kLastDay,
+                  lastDay: DateTime.now(),
                   focusedDay: _focusedDay,
                   calendarFormat: _calendarFormat,
                   headerVisible: true,
+                  rowHeight: 40.h,
+                  rangeStartDay: _rangeStart,
+                  rangeEndDay: _rangeEnd,
+                  rangeSelectionMode: _rangeSelectionMode,
                   headerStyle: HeaderStyle(
                       titleCentered: true,
                       formatButtonVisible: false,
@@ -72,13 +91,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         color: Colors.black,
                         size: 30.w,
                       )),
-                  rowHeight: 40.h,
                   selectedDayPredicate: (day) {
                     return isSameDay(_selectedDay, day);
                   },
-                  rangeStartDay: _rangeStart,
-                  rangeEndDay: _rangeEnd,
-                  rangeSelectionMode: _rangeSelectionMode,
                   onDaySelected: (selectedDay, focusedDay) {
                     if (!isSameDay(_selectedDay, selectedDay)) {
                       setState(() {
@@ -132,22 +147,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 margin: EdgeInsets.symmetric(vertical: 10.h),
               ),
               Expanded(
-                  child: ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.w),
-                      itemCount: listLength + 1,
+                  child: Obx(() => ListView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      itemCount: homeViewModel.historyList.length,
+                      // itemCount: listLength + 1,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemBuilder: (itemBuilderContext, index) {
                         return historyItemRow(
-                            daysTitle.elementAt(index).split(" ")[0],
-                            daysTitle.elementAt(index).split(" ")[1],
-                            '09:10 AM',
-                            '06:10 AM',
-                            '09:00:00',
-                            (index % 2 == 0)
-                                ? ColorPalette.appPrimaryColor
-                                : ColorPalette.appSecondaryColor);
-                      })),
+                            homeViewModel.historyList.elementAt(index));
+                      }))),
             ],
           ),
         ),
@@ -155,100 +163,124 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  Widget historyItemRow(String date, String day, String checkIn,
-      String checkOut, String totalHrs, Color dayBgColor) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        // border: Border.all(color: borderColor)
-      ),
-      margin: EdgeInsets.only(top: 8.h),
-      child: Row(
-        children: [
-          Container(
-            height: 55.w,
-            width: 55.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: ColorPalette.appPrimaryColor,
-              // color: dayBgColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.r),
-                bottomLeft: Radius.circular(10.r),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  date,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  day,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w500),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              height: 55.w,
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              decoration: BoxDecoration(
-                color: ColorPalette.appPrimaryColor.withOpacity(0.8),
-                // color: dayBgColor.withOpacity(0.5),
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10.r),
-                  bottomRight: Radius.circular(10.r),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  timerWidget(checkIn, "CheckIn"),
-                  timerWidget(checkOut, "CheckOut"),
-                  timerWidget(totalHrs, "Total Hrs"),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget historyItemRow(JobHistoryData data) {
+    String? jobStatus;
+    if (data.jobForm!.isNotEmpty) {
+      jobStatus = data.jobForm!.elementAt(0).status!.toString();
+    }
 
-  Widget timerWidget(String time, String title) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          time,
-          style: TextStyle(
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.white),
+    return InkWell(
+      onTap: () {
+        Get.toNamed(RoutePathConstants.historyDetailScreen,
+            arguments: {"data": data});
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.r),
+          // border: Border.all(color: borderColor)
         ),
-        SizedBox(height: 5.h),
-        Text(
-          title,
-          style: TextStyle(
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.white),
+        margin: EdgeInsets.only(top: 8.h),
+        child: Row(
+          children: [
+            Container(
+              height: 62.w,
+              width: 55.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: ColorPalette.appPrimaryColor,
+                // color: dayBgColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.r),
+                  bottomLeft: Radius.circular(10.r),
+                ),
+              ),
+              child: Text(
+                '${data.id}',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.sp,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                height: 62.w,
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                decoration: BoxDecoration(
+                  color: ColorPalette.appPrimaryColor.withOpacity(0.8),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10.r),
+                    bottomRight: Radius.circular(10.r),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.customerName ?? '',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          data.serviceTitanNumber ?? '',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(6.r)),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 4.h),
+                          child: Text(
+                            jobStatus == null
+                                ? "No Job Form"
+                                : homeViewModel.jobStatusList[jobStatus]!,
+                            style: TextStyle(
+                                color: ColorPalette.appPrimaryColor
+                                    .withOpacity(0.8),
+                                fontSize: 10.sp,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          data.totalHours ?? '',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

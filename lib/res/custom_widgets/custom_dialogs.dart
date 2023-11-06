@@ -16,7 +16,7 @@ class CustomDialogs {
     showGeneralDialog(
       context: context,
       barrierLabel: "",
-      barrierDismissible: false,
+      barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (_, __, ___) {
