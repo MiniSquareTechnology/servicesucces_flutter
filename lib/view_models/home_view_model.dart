@@ -162,6 +162,9 @@ class HomeViewModel extends GetxController {
     };
     updateJobRequest(params);
 
+    /// clear timer text
+    timerText.value = "";
+
     /// clear job form values
     jobTotalController.text = "";
     jobPercentageValue.value = "Select";

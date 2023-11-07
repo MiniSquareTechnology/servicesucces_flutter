@@ -7,6 +7,9 @@ import 'package:employee_clock_in/data/resources/endpoints.dart';
 import 'package:employee_clock_in/res/utils/error/app_error.dart';
 import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
+import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
+import 'package:get/route_manager.dart';
+
 import 'package:http/http.dart' as http;
 
 import 'package:http/http.dart';
@@ -143,6 +146,10 @@ class HttpClient {
         }
       } else if (response.statusCode == 422) {
         throw AppError(message: '${jsonDecode(response.body)['message']}', code: 422);
+      } else if (response.statusCode == 401) {
+        AppPreferenceStorage.clearPreference();
+        Get.offAllNamed(RoutePathConstants.loginScreen);
+        throw AppError(message: "Session Expired", code: 401);
       } else {
         if ((jsonDecode(response.body) as Map<String, dynamic>)
             .containsKey("error")) {
