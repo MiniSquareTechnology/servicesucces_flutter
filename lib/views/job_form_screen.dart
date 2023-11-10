@@ -22,6 +22,16 @@ class JobFormScreen extends StatefulWidget {
 class _JobFormScreenState extends State<JobFormScreen> {
   late HomeViewModel homeViewModel;
   List<int> jobPercentageList = [5, 7, 8, 10];
+  String dropdownvalue = 'Item 1';
+
+  // List of items in our dropdown menu
+  var items = [
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+  ];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -125,7 +135,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        _showPicker(context);
+                        showImagePickerBottomDialog();
                       },
                       child: Container(
                         padding: EdgeInsets.only(
@@ -140,7 +150,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                             SizedBox(
                               width: 0.75.sw,
                               child: Obx(() => Text(
-                                  homeViewModel.jobPercentageValue.value,
+                                  "${homeViewModel.jobPercentageValue.value} ${homeViewModel.jobPercentageValue.value.isNum ? "%" : ""}",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
@@ -182,38 +192,46 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
-  void _showPicker(BuildContext ctx) {
-    showCupertinoModalPopup<void>(
-        context: ctx,
-        builder: (_) => SizedBox(
-              width: 1.0.sw,
-              height: 250.h,
-              child: CupertinoPicker(
-                backgroundColor: Colors.white,
-                itemExtent: 40.h,
-                scrollController: FixedExtentScrollController(initialItem: 0),
-                children: jobPercentageList
-                    .map((e) => Container(
-                          height: 40.h,
-                          alignment: Alignment.center,
-                          child: Text("$e %",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                      color: ColorPalette.appPrimaryColor,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16.sp)),
-                        ))
-                    .toList(),
-                onSelectedItemChanged: (value) {
-                  homeViewModel.jobPercentageValue.value =
-                      jobPercentageList.elementAt(value).toString();
-                },
-              ),
-            ));
+  Future<void> showImagePickerBottomDialog() async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 20.h),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: jobPercentageList
+                .map((e) => imagePickDialogItem("$e"))
+                .toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget imagePickDialogItem(String title) {
+    return InkWell(
+      onTap: () {
+        homeViewModel.jobPercentageValue.value = title;
+        Get.back();
+      },
+      child: Container(
+        width: 1.0.sw,
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(bottom: 4.h),
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(8.r)),
+        child: Text("$title %",
+            style: TextStyle(
+                color: ColorPalette.appPrimaryColor,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600)),
+      ),
+    );
   }
 
   void saveBtnClick() async {
