@@ -16,6 +16,7 @@ class HomeViewModel extends GetxController {
   Rx<bool> showArrival = false.obs;
   Rx<bool> checkInStart = false.obs;
   Rx<String> arrivalTimeText = "".obs;
+  RxInt userRole = 0.obs;
   Rx<String> userName = "".obs;
   Rx<String> currentDate = "".obs;
   Rx<String> totalHours = "--:--".obs;
@@ -29,6 +30,8 @@ class HomeViewModel extends GetxController {
   TextEditingController customerNameController = TextEditingController();
   TextEditingController serviceTitanNumController = TextEditingController();
   TextEditingController jobTotalController = TextEditingController();
+  TextEditingController amountCollectedController = TextEditingController();
+  TextEditingController amountFinancedController = TextEditingController();
   Rx<String> jobPercentageValue = "Select".obs;
 
   // Initialize an instance of Stopwatch
@@ -51,6 +54,15 @@ class HomeViewModel extends GetxController {
     "6": "Sold"
   };
 
+  List<int> jobPercentageList = [5, 7, 8, 10];
+  List<String> form2CheckList = [
+    // "Amount Financed",
+    "I Sold it",
+    "I Did it",
+    "I Set the Lead"
+  ];
+  RxList<int> plumbingCheckListSelected = <int>[].obs;
+
   @override
   void update([List<Object>? ids, bool condition = true]) {}
 
@@ -70,6 +82,8 @@ class HomeViewModel extends GetxController {
     userName.value = await AppPreferenceStorage.getStringValuesSF(
             AppPreferenceStorage.userName) ??
         "Hey William!";
+    userRole.value = await AppPreferenceStorage.getIntValuesSF(
+        AppPreferenceStorage.userRole) ?? 0;
   }
 
   void getJobFormData() async {
@@ -167,8 +181,13 @@ class HomeViewModel extends GetxController {
 
     /// clear job form values
     jobTotalController.text = "";
+    amountCollectedController.text = "";
+    amountFinancedController.text = "";
     jobPercentageValue.value = "Select";
+    plumbingCheckListSelected.clear();
     AppPreferenceStorage.deleteKey(AppPreferenceStorage.jobFormUpdateId);
+    AppPreferenceStorage.deleteKey(
+        AppPreferenceStorage.plumbingJobFormUpdateId);
   }
 
   // This function will be called when the user presses the Start button
@@ -194,6 +213,14 @@ class HomeViewModel extends GetxController {
   void _reset() {
     _stop();
     _stopwatch.reset();
+  }
+
+  void updateForm2ListValue(int index) {
+    if (plumbingCheckListSelected.contains(index)) {
+      plumbingCheckListSelected.remove(index);
+    } else {
+      plumbingCheckListSelected.add(index);
+    }
   }
 
   Future<bool> addJobRequest(
@@ -287,6 +314,54 @@ class HomeViewModel extends GetxController {
       if (addJobResponseModel.statusCode! == 200) {
         AppPreferenceStorage.setStringValuesSF(
             AppPreferenceStorage.jobFormUpdateId,
+            addJobResponseModel.data!.id!.toString());
+        return true;
+      } else {
+        return false;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      showErrorDialog(exception.message);
+      return false;
+    }
+  }
+
+  Future<bool> addPlumbingJobFormRequest() async {
+    try {
+      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      String jobId = await AppPreferenceStorage.getStringValuesSF(
+              AppPreferenceStorage.jobId) ??
+          "";
+      bool isUpdateForm = await AppPreferenceStorage.containKey(
+          AppPreferenceStorage.plumbingJobFormUpdateId);
+
+      Map<String, String> params = <String, String>{
+        "service_titan_number": serviceTitanNumController.text,
+        "amount_collected": amountCollectedController.text.trim(),
+        "amount_financed": amountFinancedController.text.trim(),
+        "job_id": jobId,
+        "i_sold_it": plumbingCheckListSelected.contains(0) ? "1" : "0",
+        "i_did_it": plumbingCheckListSelected.contains(1) ? "1" : "0",
+        "i_set_the_lead": plumbingCheckListSelected.contains(2) ? "1" : "0",
+      };
+
+      if (isUpdateForm) {
+        String plumbingJobFormUpdateId =
+            await AppPreferenceStorage.getStringValuesSF(
+                    AppPreferenceStorage.plumbingJobFormUpdateId) ??
+                '';
+        params.addAll(<String, String>{
+          "id": plumbingJobFormUpdateId,
+        });
+      }
+
+      AddJobResponseModel addJobResponseModel =
+          await homeRepository.addPlumbingJobFormApi(params);
+      Get.back();
+
+      if (addJobResponseModel.statusCode! == 200) {
+        AppPreferenceStorage.setStringValuesSF(
+            AppPreferenceStorage.plumbingJobFormUpdateId,
             addJobResponseModel.data!.id!.toString());
         return true;
       } else {

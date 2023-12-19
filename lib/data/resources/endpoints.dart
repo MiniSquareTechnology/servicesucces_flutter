@@ -51,6 +51,11 @@ class ApiJobEndPoints {
       method: RequestType.Post,
       needsAuthorization: true);
 
+  final ApiEndpoint addPlumbingJobForm = ApiEndpoint(
+      path: "add-update-job-form-plumbing",
+      method: RequestType.Post,
+      needsAuthorization: true);
+
   final ApiEndpoint jobHistory = ApiEndpoint(
       path: "job-history",
       method: RequestType.Get,

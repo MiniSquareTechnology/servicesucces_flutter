@@ -1,11 +1,11 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/app_textfield.dart';
 import 'package:employee_clock_in/res/custom_widgets/buttons/app_filled_button.dart';
+import 'package:employee_clock_in/res/custom_widgets/check_box_widget.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/res/utils/validator/validators.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +13,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class JobFormScreen extends StatefulWidget {
-  const JobFormScreen({super.key});
+  final int formType;
+
+  const JobFormScreen({super.key, required this.formType});
 
   @override
   State<JobFormScreen> createState() => _JobFormScreenState();
@@ -21,17 +23,7 @@ class JobFormScreen extends StatefulWidget {
 
 class _JobFormScreenState extends State<JobFormScreen> {
   late HomeViewModel homeViewModel;
-  List<int> jobPercentageList = [5, 7, 8, 10];
-  String dropdownvalue = 'Item 1';
 
-  // List of items in our dropdown menu
-  var items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -106,74 +98,9 @@ class _JobFormScreenState extends State<JobFormScreen> {
                           Validators.emptyValidator(value!.trim()),
                     ),
                     context.getCommonSizedBox,
-                    AppTextField(
-                      controller: homeViewModel.jobTotalController,
-                      title: "Job Total",
-                      hint: "0",
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
-                      ],
-                      validator: (value) =>
-                          Validators.emptyValidator(value!.trim()),
-                      textInputAction: TextInputAction.done,
-                    ),
-                    context.getCommonSizedBox,
-                    Container(
-                      width: 1.0.sw,
-                      margin: EdgeInsets.only(bottom: 10.h),
-                      alignment: Alignment.centerLeft,
-                      child: Text("Job Percentage",
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: ColorPalette.appPrimaryColor,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.sp)),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        showImagePickerBottomDialog();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            top: 14.h, bottom: 14.h, left: 14.w),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.r),
-                            border: Border.all(
-                                width: 1.0,
-                                color: ColorPalette.appPrimaryColor)),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 0.75.sw,
-                              child: Obx(() => Text(
-                                  "${homeViewModel.jobPercentageValue.value} ${homeViewModel.jobPercentageValue.value.isNum ? "%" : ""}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: ColorPalette.appPrimaryColor,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14.sp))),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 0.01.sw,
-                                right: 0.01.sw,
-                              ),
-                              child: Icon(Icons.arrow_downward_sharp,
-                                  color: ColorPalette.appPrimaryColor,
-                                  size: 20.w),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    widget.formType == 1
+                        ? jobFormOneWidgets()
+                        : jobFormTwoWidgets(),
                     context.getCommonSizedBox,
                     context.getCommonSizedBox,
                     AppFilledButton(
@@ -192,7 +119,75 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
-  Future<void> showImagePickerBottomDialog() async {
+  /// Job Form 1
+  Widget jobFormOneWidgets() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AppTextField(
+          controller: homeViewModel.jobTotalController,
+          title: "Job Total",
+          hint: "0",
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+          ],
+          validator: (value) => Validators.emptyValidator(value!.trim()),
+          textInputAction: TextInputAction.done,
+        ),
+        context.getCommonSizedBox,
+        Container(
+          width: 1.0.sw,
+          margin: EdgeInsets.only(bottom: 10.h),
+          alignment: Alignment.centerLeft,
+          child: Text("Job Percentage",
+              textAlign: TextAlign.start,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: ColorPalette.appPrimaryColor,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14.sp)),
+        ),
+        InkWell(
+          onTap: () {
+            showJobPercentBottomDialog();
+          },
+          child: Container(
+            padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 14.w),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.r),
+                border: Border.all(
+                    width: 1.0, color: ColorPalette.appPrimaryColor)),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 0.75.sw,
+                  child: Obx(() => Text(
+                      "${homeViewModel.jobPercentageValue.value} ${homeViewModel.jobPercentageValue.value.isNum ? "%" : ""}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: ColorPalette.appPrimaryColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.sp))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 0.01.sw,
+                    right: 0.01.sw,
+                  ),
+                  child: Icon(Icons.arrow_downward_sharp,
+                      color: ColorPalette.appPrimaryColor, size: 20.w),
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> showJobPercentBottomDialog() async {
     await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -203,8 +198,8 @@ class _JobFormScreenState extends State<JobFormScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: jobPercentageList
-                .map((e) => imagePickDialogItem("$e"))
+            children: homeViewModel.jobPercentageList
+                .map((e) => jobPercentDialogItem("$e"))
                 .toList(),
           ),
         );
@@ -212,7 +207,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
-  Widget imagePickDialogItem(String title) {
+  Widget jobPercentDialogItem(String title) {
     return InkWell(
       onTap: () {
         homeViewModel.jobPercentageValue.value = title;
@@ -234,9 +229,60 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
+  /// Job Form 1 end
+
+  /// Job Form 2
+  Widget jobFormTwoWidgets() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AppTextField(
+          controller: homeViewModel.amountCollectedController,
+          title: "Amount Collected",
+          hint: "0",
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+          ],
+          validator: (value) => Validators.emptyValidator(value!.trim()),
+          textInputAction: TextInputAction.done,
+        ),
+        context.getCommonSizedBox,
+        AppTextField(
+          controller: homeViewModel.amountFinancedController,
+          title: "Amount Financed",
+          hint: "0",
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+          ],
+          validator: (value) => Validators.emptyValidator(value!.trim()),
+          textInputAction: TextInputAction.done,
+        ),
+        context.getCommonSizedBox,
+        for (int i = 0; i < homeViewModel.form2CheckList.length; i++)
+          Obx(() => CheckBoxWidget(
+              label: homeViewModel.form2CheckList[i],
+              selected: homeViewModel.plumbingCheckListSelected.contains(i),
+              index: i,
+              onTap: (index) {
+                homeViewModel.updateForm2ListValue(index);
+              }))
+      ],
+    );
+  }
+
+  /// Job Form 2 end
   void saveBtnClick() async {
     if (_formKey.currentState!.validate()) {
-      bool res = await homeViewModel.addJobFormRequest();
+      bool res;
+      if (widget.formType == 1) {
+         res = await homeViewModel.addJobFormRequest();
+      } else {
+        res = await homeViewModel.addPlumbingJobFormRequest();
+      }
+
       if (res) {
         Get.back();
       }

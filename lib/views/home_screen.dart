@@ -116,8 +116,7 @@ class _HomeScreenState extends State<HomeScreen>
                     )
                   ],
                 ),
-                context.getCommonSizedBox,
-                context.getCommonSizedBox,
+                SizedBox(height: 30.h),
                 Container(
                   width: 1.0.sw,
                   alignment: Alignment.center,
@@ -201,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ): Container()),
 
-                context.getCommonSizedBox,
+                // context.getCommonSizedBox,
                 context.getCommonSizedBox,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.w),
@@ -218,9 +217,9 @@ class _HomeScreenState extends State<HomeScreen>
                       )),
                 ),
                 context.getCommonSizedBox,
-                Obx(() => homeViewModel.showArrival.value ? InkWell(
+                Obx(() => homeViewModel.showArrival.value && homeViewModel.userRole.value == 5 ? InkWell(
                   onTap: () {
-                    Get.toNamed(RoutePathConstants.jobFormScreen);
+                    launchJobFormScreen(1);
                   },
                   child: Container(
                     width: 1.0.sw,
@@ -234,7 +233,36 @@ class _HomeScreenState extends State<HomeScreen>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Job Form",
+                          "Job Form 1",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Icon(Icons.arrow_forward, color: ColorPalette.appSecondaryColor,)
+                      ],
+                    ),
+                  ),
+                ) : Container()),
+                Obx(() => homeViewModel.showArrival.value && homeViewModel.userRole.value == 6 ? InkWell(
+                  onTap: () {
+                    launchJobFormScreen(2);
+                  },
+                  child: Container(
+                    width: 1.0.sw,
+                    margin: EdgeInsets.only(top: 10.h),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+                    decoration: BoxDecoration(
+                        color: ColorPalette.appPrimaryColor,
+                        borderRadius: BorderRadius.circular(10.r)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Job Form 2",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 15.sp,
@@ -297,14 +325,6 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       );
-
-/*  void _onTapDown(TapDownDetails details) {
-    _controller.forward();
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    _controller.reverse();
-  }*/
 
   Widget timerWidget(String time, String title) {
     return Column(
@@ -465,4 +485,9 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  launchJobFormScreen(int formType) {
+    Get.toNamed(RoutePathConstants.jobFormScreen, arguments: {
+      "formType" : formType
+    });
+  }
 }

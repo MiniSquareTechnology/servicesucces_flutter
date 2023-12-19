@@ -33,6 +33,14 @@ class HomeRepository {
     );
   }
 
+  Future<AddJobResponseModel> addPlumbingJobFormApi(Map<String, String> params) async {
+    return await iClient.handleRequest(
+      apiEndpoint: ApiEndpointProvider().homeEndPoints.addPlumbingJobForm,
+      body: params,
+      responseConverter: (json) => AddJobResponseModel.fromJson(json),
+    );
+  }
+
   Future<JobHistoryResponseModel> getJobHistoryApi(Map<String, String> params) async {
     return await iClient.handleRequest(
       apiEndpoint: ApiEndpointProvider().homeEndPoints.jobHistory,

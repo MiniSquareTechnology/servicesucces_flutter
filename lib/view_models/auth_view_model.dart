@@ -129,5 +129,7 @@ class AuthViewModel extends GetxController {
         AppPreferenceStorage.userImage, model.data!.profileImage ?? '');
     AppPreferenceStorage.setStringValuesSF(
         AppPreferenceStorage.authToken, model.data!.authToken!);
+    AppPreferenceStorage.setIntValuesSF(
+        AppPreferenceStorage.userRole, model.data!.role!.toInt());
   }
 }

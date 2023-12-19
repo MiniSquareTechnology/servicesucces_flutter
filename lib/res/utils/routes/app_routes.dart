@@ -15,7 +15,10 @@ class AppRoutes {
       RoutePathConstants.splashScreen: (context) => const SplashScreen(),
       RoutePathConstants.loginScreen: (context) => const LoginScreen(),
       RoutePathConstants.bottomNavScreen: (context) => const BottomNavScreen(),
-      RoutePathConstants.jobFormScreen: (context) => const JobFormScreen(),
+      RoutePathConstants.jobFormScreen: (context) {
+        Map params = ModalRoute.of(context)!.settings.arguments as Map;
+        return JobFormScreen(formType: params['formType'],);
+      },
       RoutePathConstants.changePasswordScreen: (context) =>
           const ChangePasswordScreen(),
       RoutePathConstants.historyDetailScreen: (context) {

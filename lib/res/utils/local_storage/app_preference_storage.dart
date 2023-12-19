@@ -11,6 +11,7 @@ class AppPreferenceStorage {
 
   static String userId = 'userId';
   static String userName = "userName";
+  static String userRole = "userRole";
   static String signupWith = "signupWith";
   static String userEmail = "userEmail";
   static String userImage = "userImage";
@@ -27,6 +28,7 @@ class AppPreferenceStorage {
   static String isJobRunning = 'isJobRunning';
   static String jobStatus = 'jobStatus';
   static String jobFormUpdateId = 'jobFormUpdateId';
+  static String plumbingJobFormUpdateId = 'plumbingJobFormUpdateId';
   static String jobId = 'jobId';
   static String totalTime = 'totalTime';
   static String checkInTime = 'CheckInTime';
