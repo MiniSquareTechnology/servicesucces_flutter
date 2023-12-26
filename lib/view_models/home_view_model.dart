@@ -30,6 +30,7 @@ class HomeViewModel extends GetxController {
   TextEditingController customerNameController = TextEditingController();
   TextEditingController serviceTitanNumController = TextEditingController();
   TextEditingController jobTotalController = TextEditingController();
+  TextEditingController totalPayController = TextEditingController();
   TextEditingController amountCollectedController = TextEditingController();
   TextEditingController amountFinancedController = TextEditingController();
   Rx<String> jobPercentageValue = "Select".obs;
@@ -61,7 +62,12 @@ class HomeViewModel extends GetxController {
     "I Did it",
     "I Set the Lead"
   ];
+  List<String> form3CheckList = [
+    "VIP Sold",
+    "I Sold it",
+  ];
   RxList<int> plumbingCheckListSelected = <int>[].obs;
+  RxList<int> form3ListSelected = <int>[].obs;
 
   @override
   void update([List<Object>? ids, bool condition = true]) {}
@@ -83,7 +89,8 @@ class HomeViewModel extends GetxController {
             AppPreferenceStorage.userName) ??
         "Hey William!";
     userRole.value = await AppPreferenceStorage.getIntValuesSF(
-        AppPreferenceStorage.userRole) ?? 0;
+            AppPreferenceStorage.userRole) ??
+        0;
   }
 
   void getJobFormData() async {
@@ -181,10 +188,12 @@ class HomeViewModel extends GetxController {
 
     /// clear job form values
     jobTotalController.text = "";
+    totalPayController.text = "";
     amountCollectedController.text = "";
     amountFinancedController.text = "";
     jobPercentageValue.value = "Select";
     plumbingCheckListSelected.clear();
+    form3ListSelected.clear();
     AppPreferenceStorage.deleteKey(AppPreferenceStorage.jobFormUpdateId);
     AppPreferenceStorage.deleteKey(
         AppPreferenceStorage.plumbingJobFormUpdateId);
@@ -220,6 +229,14 @@ class HomeViewModel extends GetxController {
       plumbingCheckListSelected.remove(index);
     } else {
       plumbingCheckListSelected.add(index);
+    }
+  }
+
+  void updateForm3ListValue(int index) {
+    if (form3ListSelected.contains(index)) {
+      form3ListSelected.remove(index);
+    } else {
+      form3ListSelected.add(index);
     }
   }
 

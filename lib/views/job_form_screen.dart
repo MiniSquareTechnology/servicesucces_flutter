@@ -100,7 +100,9 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     context.getCommonSizedBox,
                     widget.formType == 1
                         ? jobFormOneWidgets()
-                        : jobFormTwoWidgets(),
+                        : widget.formType == 2
+                            ? jobFormTwoWidgets()
+                            : jobFormThreeWidgets(),
                     context.getCommonSizedBox,
                     context.getCommonSizedBox,
                     AppFilledButton(
@@ -229,8 +231,6 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
-  /// Job Form 1 end
-
   /// Job Form 2
   Widget jobFormTwoWidgets() {
     return Column(
@@ -273,14 +273,67 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
-  /// Job Form 2 end
+  /// Job Form 3
+  Widget jobFormThreeWidgets() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AppTextField(
+          controller: homeViewModel.jobTotalController,
+          title: "Job Total",
+          hint: "0",
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+          ],
+          validator: (value) => Validators.emptyValidator(value!.trim()),
+          textInputAction: TextInputAction.done,
+          onChanged: (String value) {
+            if(value.isNotEmpty) {
+              homeViewModel.totalPayController.text = "${int.parse(value) * 4 / 100}";
+            }
+          },
+        ),
+        context.getCommonSizedBox,
+        AppTextField(
+          controller: homeViewModel.totalPayController,
+          title: "Total Pay",
+          hint: "0",
+          readOnly: true,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+          ],
+          validator: (value) => Validators.emptyValidator(value!.trim()),
+          textInputAction: TextInputAction.done,
+        ),
+        context.getCommonSizedBox,
+        for (int i = 0; i < homeViewModel.form3CheckList.length; i++)
+          Obx(() => CheckBoxWidget(
+              label: homeViewModel.form3CheckList[i],
+              selected: homeViewModel.form3ListSelected.contains(i),
+              index: i,
+              onTap: (index) {
+                homeViewModel.updateForm3ListValue(index);
+              }))
+      ],
+    );
+  }
+
   void saveBtnClick() async {
     if (_formKey.currentState!.validate()) {
       bool res;
       if (widget.formType == 1) {
-         res = await homeViewModel.addJobFormRequest();
-      } else {
+        res = await homeViewModel.addJobFormRequest();
+      }
+
+      if (widget.formType == 2) {
         res = await homeViewModel.addPlumbingJobFormRequest();
+      }
+
+      else {
+        res = true;
       }
 
       if (res) {

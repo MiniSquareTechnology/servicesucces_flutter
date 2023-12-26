@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                   child: Container(
                     width: 1.0.sw,
-                    margin: EdgeInsets.only(top: 10.h),
+                    margin: EdgeInsets.only(top: 0.h),
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
                     decoration: BoxDecoration(
                         color: ColorPalette.appPrimaryColor,
@@ -274,6 +274,38 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   ),
                 ) : Container()),
+                Obx(() => homeViewModel.showArrival.value ? SizedBox(height: 10.h) : Container()),
+                Obx(() => homeViewModel.showArrival.value ? InkWell(
+                    onTap: () {
+                      launchJobFormScreen(3);
+                    },
+                    child: Container(
+                      width: 1.0.sw,
+                      margin: EdgeInsets.only(top: 0.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.w, vertical: 14.h),
+                      decoration: BoxDecoration(
+                          color: ColorPalette.appPrimaryColor,
+                          borderRadius: BorderRadius.circular(10.r)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Job Form 3",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: ColorPalette.appSecondaryColor,
+                          )
+                        ],
+                      ),
+                    )) : Container()),
               ],
             ),
           ),
