@@ -29,6 +29,7 @@ class AppPreferenceStorage {
   static String jobStatus = 'jobStatus';
   static String jobFormUpdateId = 'jobFormUpdateId';
   static String plumbingJobFormUpdateId = 'plumbingJobFormUpdateId';
+  static String technicianJobFormUpdateId = 'technicianJobFormUpdateId';
   static String jobId = 'jobId';
   static String totalTime = 'totalTime';
   static String checkInTime = 'CheckInTime';

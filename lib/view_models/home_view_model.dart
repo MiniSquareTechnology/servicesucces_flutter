@@ -197,6 +197,8 @@ class HomeViewModel extends GetxController {
     AppPreferenceStorage.deleteKey(AppPreferenceStorage.jobFormUpdateId);
     AppPreferenceStorage.deleteKey(
         AppPreferenceStorage.plumbingJobFormUpdateId);
+    AppPreferenceStorage.deleteKey(
+        AppPreferenceStorage.technicianJobFormUpdateId);
   }
 
   // This function will be called when the user presses the Start button
@@ -343,7 +345,7 @@ class HomeViewModel extends GetxController {
     }
   }
 
-  Future<bool> addPlumbingJobFormRequest() async {
+  Future<bool> addUpdatePlumbingJobFormRequest() async {
     try {
       CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
@@ -373,12 +375,59 @@ class HomeViewModel extends GetxController {
       }
 
       AddJobResponseModel addJobResponseModel =
-          await homeRepository.addPlumbingJobFormApi(params);
+          await homeRepository.addUpdatePlumbingJobFormApi(params);
       Get.back();
 
       if (addJobResponseModel.statusCode! == 200) {
         AppPreferenceStorage.setStringValuesSF(
             AppPreferenceStorage.plumbingJobFormUpdateId,
+            addJobResponseModel.data!.id!.toString());
+        return true;
+      } else {
+        return false;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      showErrorDialog(exception.message);
+      return false;
+    }
+  }
+
+  Future<bool> addUpdateTechnicianJobFormRequest() async {
+    try {
+      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      String jobId = await AppPreferenceStorage.getStringValuesSF(
+          AppPreferenceStorage.jobId) ??
+          "";
+      bool isUpdateForm = await AppPreferenceStorage.containKey(
+          AppPreferenceStorage.technicianJobFormUpdateId);
+
+      Map<String, String> params = <String, String>{
+        "service_titan_number": serviceTitanNumController.text,
+        "job_id": jobId,
+        "job_total" : jobTotalController.text.trim(),
+        "total_pay" : totalPayController.text.trim(),
+        "vip_sold": form3ListSelected.contains(0) ? "1" : "0",
+        "i_sold_it": form3ListSelected.contains(1) ? "1" : "0",
+      };
+
+      if (isUpdateForm) {
+        String technicianJobFormUpdateId =
+            await AppPreferenceStorage.getStringValuesSF(
+                AppPreferenceStorage.technicianJobFormUpdateId) ??
+                '';
+        params.addAll(<String, String>{
+          "id": technicianJobFormUpdateId,
+        });
+      }
+
+      AddJobResponseModel addJobResponseModel =
+      await homeRepository.addUpdateTechnicianJobFormApi(params);
+      Get.back();
+
+      if (addJobResponseModel.statusCode! == 200) {
+        AppPreferenceStorage.setStringValuesSF(
+            AppPreferenceStorage.technicianJobFormUpdateId,
             addJobResponseModel.data!.id!.toString());
         return true;
       } else {

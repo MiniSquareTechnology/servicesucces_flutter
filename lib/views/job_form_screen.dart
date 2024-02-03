@@ -329,7 +329,11 @@ class _JobFormScreenState extends State<JobFormScreen> {
       }
 
       if (widget.formType == 2) {
-        res = await homeViewModel.addPlumbingJobFormRequest();
+        res = await homeViewModel.addUpdatePlumbingJobFormRequest();
+      }
+
+      if (widget.formType == 3) {
+        res = await homeViewModel.addUpdateTechnicianJobFormRequest();
       }
 
       else {
