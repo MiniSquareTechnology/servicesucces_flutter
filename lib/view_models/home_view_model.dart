@@ -123,7 +123,7 @@ class HomeViewModel extends GetxController {
     }
   }
 
-  void setCheckInTime(String customerName, String serviceTitanNumber) {
+  void setCheckInTime(String customerName, String serviceTitanNumber, String address, String lat, String long) {
     punchIn = DateTime.now();
     checkInTimer.value = DateFormat().add_jm().format(punchIn!);
     _start();
@@ -133,7 +133,7 @@ class HomeViewModel extends GetxController {
     checkOutTimer.value = "--:--";
 
     ///
-    addJobRequest(customerName, serviceTitanNumber);
+    addJobRequest(customerName, serviceTitanNumber, address, lat, long);
 
     // todo when kill after job start
     /*AppPreferenceStorage.setBoolValuesSF(
@@ -146,14 +146,17 @@ class HomeViewModel extends GetxController {
         "homeViewModel.timerText.value");*/
   }
 
-  void updateArrival() {
+  void updateArrival(String address, String lat, String long) {
     DateTime now = DateTime.now();
     arrivalTimeText.value =
         "${DateFormat().add_jms().format(now)} ${DateFormat().add_yMMMMEEEEd().format(now)}";
     buttonStatus.value = "Click to \nDone";
     showArrival.value = true;
     Map<String, String> params = {
-      "arrival_time": DateFormat('yyyy-MM-dd HH:mm:ss').format(now)
+      "arrival_time": DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
+      "address" : address,
+      "lat" : lat,
+      "long" : long,
     };
 
     ///
@@ -161,7 +164,7 @@ class HomeViewModel extends GetxController {
     getJobFormData();
   }
 
-  void setCheckOutTime() {
+  void setCheckOutTime(String address, String lat, String long) {
     DateTime now = DateTime.now();
     punchOut = now;
     checkOutTimer.value = DateFormat().add_jm().format(now);
@@ -179,7 +182,10 @@ class HomeViewModel extends GetxController {
     ///
     Map<String, String> params = {
       "checkout_time": DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
-      "total_hours": totalHours.value
+      "total_hours": totalHours.value,
+      "address" : address,
+      "lat" : lat,
+      "long" : long,
     };
     updateJobRequest(params);
 
@@ -243,14 +249,17 @@ class HomeViewModel extends GetxController {
   }
 
   Future<bool> addJobRequest(
-      String customerName, String serviceTitanNumber) async {
+      String customerName, String serviceTitanNumber, String address, String lat, String long) async {
     try {
       CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
       Map<String, String> params = {
         "customer_name": customerName,
         "service_titan_number": serviceTitanNumber,
         "dispatch_time":
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+        "address" : address,
+        "lat" : lat,
+        "long" : long,
       };
       AddJobResponseModel addJobResponseModel =
           await homeRepository.addJobApi(params);

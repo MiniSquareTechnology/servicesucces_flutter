@@ -1,6 +1,7 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/data/services/location_service.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/extensions/address_from_lat_lon.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
@@ -18,14 +19,15 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+
 /// flutter build apk --release -v --no-tree-shake-icons
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver{
-
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   TextEditingController customerNameController = TextEditingController();
   TextEditingController serviceTitanNumController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  String? address;
+  String  lat = "", long = "";
   late HomeViewModel homeViewModel;
 
   @override
@@ -72,8 +74,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: Scaffold(
           backgroundColor: Colors.white,
           body: Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,13 +89,13 @@ class _HomeScreenState extends State<HomeScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Obx(() => Text(
-                          homeViewModel.userName.value,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18.sp,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500),
-                        )),
+                              homeViewModel.userName.value,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.sp,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w500),
+                            )),
                         Text(
                           "Good morning! Mark your attendance",
                           style: TextStyle(
@@ -167,38 +168,42 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 context.getCommonSizedBox,
 
-                Obx(() => homeViewModel.showArrival.value ? context.getCommonSizedBox : Container()),
+                Obx(() => homeViewModel.showArrival.value
+                    ? context.getCommonSizedBox
+                    : Container()),
                 // Obx(() => homeViewModel.showArrival.value ? context.getCommonSizedBox: Container()),
-                Obx(() => homeViewModel.showArrival.value ? Container(
-                  width: 1.0.sw,
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
-                  decoration: BoxDecoration(
-                      color: ColorPalette.appPrimaryColor,
-                      borderRadius: BorderRadius.circular(10.r)
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Arrival time",
-                        style: TextStyle(
-                            color: ColorPalette.appSecondaryColor,
-                            fontSize: 16.sp,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(height: 6.h),
-                      Text(
-                        homeViewModel.arrivalTimeText.value,
-                        style: TextStyle(
-                            color: ColorPalette.appSecondaryColor,
-                            fontSize: 13.sp,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ],
-                  ),
-                ): Container()),
+                Obx(() => homeViewModel.showArrival.value
+                    ? Container(
+                        width: 1.0.sw,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 14.h),
+                        decoration: BoxDecoration(
+                            color: ColorPalette.appPrimaryColor,
+                            borderRadius: BorderRadius.circular(10.r)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Arrival time",
+                              style: TextStyle(
+                                  color: ColorPalette.appSecondaryColor,
+                                  fontSize: 16.sp,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              homeViewModel.arrivalTimeText.value,
+                              style: TextStyle(
+                                  color: ColorPalette.appSecondaryColor,
+                                  fontSize: 13.sp,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container()),
 
                 // context.getCommonSizedBox,
                 context.getCommonSizedBox,
@@ -217,95 +222,111 @@ class _HomeScreenState extends State<HomeScreen>
                       )),
                 ),
                 context.getCommonSizedBox,
-                Obx(() => homeViewModel.showArrival.value && homeViewModel.userRole.value == 5 ? InkWell(
-                  onTap: () {
-                    launchJobFormScreen(1);
-                  },
-                  child: Container(
-                    width: 1.0.sw,
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
-                    decoration: BoxDecoration(
-                        color: ColorPalette.appPrimaryColor,
-                        borderRadius: BorderRadius.circular(10.r)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Job Form 1",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.sp,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Icon(Icons.arrow_forward, color: ColorPalette.appSecondaryColor,)
-                      ],
-                    ),
-                  ),
-                ) : Container()),
-                Obx(() => homeViewModel.showArrival.value && homeViewModel.userRole.value == 6 ? InkWell(
-                  onTap: () {
-                    launchJobFormScreen(2);
-                  },
-                  child: Container(
-                    width: 1.0.sw,
-                    margin: EdgeInsets.only(top: 0.h),
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
-                    decoration: BoxDecoration(
-                        color: ColorPalette.appPrimaryColor,
-                        borderRadius: BorderRadius.circular(10.r)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Job Form 2",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.sp,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Icon(Icons.arrow_forward, color: ColorPalette.appSecondaryColor,)
-                      ],
-                    ),
-                  ),
-                ) : Container()),
-                Obx(() => homeViewModel.showArrival.value ? SizedBox(height: 10.h) : Container()),
-                Obx(() => homeViewModel.showArrival.value ? InkWell(
-                    onTap: () {
-                      launchJobFormScreen(3);
-                    },
-                    child: Container(
-                      width: 1.0.sw,
-                      margin: EdgeInsets.only(top: 0.h),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.w, vertical: 14.h),
-                      decoration: BoxDecoration(
-                          color: ColorPalette.appPrimaryColor,
-                          borderRadius: BorderRadius.circular(10.r)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Job Form 3",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15.sp,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500),
+                Obx(() => homeViewModel.showArrival.value &&
+                        homeViewModel.userRole.value == 5
+                    ? InkWell(
+                        onTap: () {
+                          launchJobFormScreen(1);
+                        },
+                        child: Container(
+                          width: 1.0.sw,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 14.h),
+                          decoration: BoxDecoration(
+                              color: ColorPalette.appPrimaryColor,
+                              borderRadius: BorderRadius.circular(10.r)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Job Form 1",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15.sp,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Icon(
+                                Icons.arrow_forward,
+                                color: ColorPalette.appSecondaryColor,
+                              )
+                            ],
                           ),
-                          Icon(
-                            Icons.arrow_forward,
-                            color: ColorPalette.appSecondaryColor,
-                          )
-                        ],
-                      ),
-                    )) : Container()),
+                        ),
+                      )
+                    : Container()),
+                Obx(() => homeViewModel.showArrival.value &&
+                        homeViewModel.userRole.value == 6
+                    ? InkWell(
+                        onTap: () {
+                          launchJobFormScreen(2);
+                        },
+                        child: Container(
+                          width: 1.0.sw,
+                          margin: EdgeInsets.only(top: 0.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 14.h),
+                          decoration: BoxDecoration(
+                              color: ColorPalette.appPrimaryColor,
+                              borderRadius: BorderRadius.circular(10.r)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Job Form 2",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15.sp,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Icon(
+                                Icons.arrow_forward,
+                                color: ColorPalette.appSecondaryColor,
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container()),
+                Obx(() => homeViewModel.showArrival.value
+                    ? SizedBox(height: 10.h)
+                    : Container()),
+                Obx(() => homeViewModel.showArrival.value
+                    ? InkWell(
+                        onTap: () {
+                          launchJobFormScreen(3);
+                        },
+                        child: Container(
+                          width: 1.0.sw,
+                          margin: EdgeInsets.only(top: 0.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 14.h),
+                          decoration: BoxDecoration(
+                              color: ColorPalette.appPrimaryColor,
+                              borderRadius: BorderRadius.circular(10.r)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Job Form 3",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15.sp,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Icon(
+                                Icons.arrow_forward,
+                                color: ColorPalette.appSecondaryColor,
+                              )
+                            ],
+                          ),
+                        ))
+                    : Container()),
               ],
             ),
           ),
@@ -388,19 +409,18 @@ class _HomeScreenState extends State<HomeScreen>
 
   void mainBtnClick() {
     if (homeViewModel.checkInStart.value) {
-      if(homeViewModel.buttonStatus.value.compareTo("Click to \nArrive") == 0) {
-        homeViewModel.updateArrival();
+      if (homeViewModel.buttonStatus.value.compareTo("Click to \nArrive") ==
+          0) {
+        homeViewModel.updateArrival(address ?? '', lat, long);
       } else {
-        CustomDialogs.showYesNoDialog(
-            context, "Are you want to Punch Out.",
+        CustomDialogs.showYesNoDialog(context, "Are you want to Punch Out.",
             onYesTap: () {
-              Get.back();
-              homeViewModel.setCheckOutTime();
-            }, onNoTap: () {
+          Get.back();
+          homeViewModel.setCheckOutTime(address ?? '', lat, long);
+        }, onNoTap: () {
           Get.back();
         });
       }
-
     } else {
       requestLocationBottomSheet();
     }
@@ -417,8 +437,7 @@ class _HomeScreenState extends State<HomeScreen>
         builder: (builderContext) {
           return Container(
             // height: 228.h,
-            padding: EdgeInsets.symmetric(
-                horizontal: 20.w, vertical: 22.h),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 22.h),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -498,15 +517,23 @@ class _HomeScreenState extends State<HomeScreen>
   getLocation() {
     customerNameController.text = "";
     serviceTitanNumController.text = "";
-    LocationService.determinePosition().then((value) {
+    LocationService.determinePosition().then((value) async {
       AppLogger.logMessage("--=> ${value.latitude} ${value.longitude}");
-      CustomDialogs.punchInDialog(
-          context, customerNameController, serviceTitanNumController, _formKey,
-          () {
+
+      lat = value.latitude.toString(); // '30.7115';//
+      long = value.longitude.toString(); // '76.706'; //
+      address = await value.getAddressFromCoordinates();
+      CustomDialogs.punchInDialog(Get.context!, customerNameController,
+          serviceTitanNumController, _formKey, () {
         AppLogger.logMessage(
             "-=>>< ${customerNameController.text.trim()} -- ${serviceTitanNumController.text.trim()}");
         Get.back();
-        homeViewModel.setCheckInTime(customerNameController.text.trim(), serviceTitanNumController.text.trim());
+        homeViewModel.setCheckInTime(
+            customerNameController.text.trim(),
+            serviceTitanNumController.text.trim(),
+            address ?? '',
+            lat,
+            long);
       });
       /*StreamSubscription<Position> positionStream =*/
       // Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -518,8 +545,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   launchJobFormScreen(int formType) {
-    Get.toNamed(RoutePathConstants.jobFormScreen, arguments: {
-      "formType" : formType
-    });
+    Get.toNamed(RoutePathConstants.jobFormScreen,
+        arguments: {"formType": formType});
   }
 }
