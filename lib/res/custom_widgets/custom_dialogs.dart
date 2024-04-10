@@ -78,7 +78,7 @@ class CustomDialogs {
                     controller: stNumController,
                     title: "Service Titan Number",
                     hint: "Enter Service Titan Number",
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     validator: (value) =>
                         Validators.emptyValidator(value!.trim()),
                   ),
@@ -158,6 +158,76 @@ class CustomDialogs {
                     AppFilledButton(
                       text: "No",
                       width: 120.w,
+                      onTap: () => onNoTap!(),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+        }
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
+
+  static locationDialog(
+      BuildContext context,
+      String title, {
+        GestureTapCallback? onYesTap,
+        GestureTapCallback? onNoTap,
+        String? message,
+      }) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (_, __, ___) {
+        return Dialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          child: Padding(
+            padding: EdgeInsets.all(25.h),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: ColorPalette.appPrimaryColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp)),
+                SizedBox(
+                  height: 20.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppFilledButton(
+                      text: "Open Settings",
+                      width: 140.w,
+                      onTap: () => onYesTap!(),
+                    ),
+                    AppFilledButton(
+                      text: "No",
+                      width: 100.w,
                       onTap: () => onNoTap!(),
                     ),
                   ],

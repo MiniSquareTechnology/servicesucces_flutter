@@ -39,7 +39,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       homeViewModel.getJobHistory(
           DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()));
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()), false);
     });
     super.initState();
   }

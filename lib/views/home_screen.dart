@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:employee_clock_in/data/binding/app_binding.dart';
+import 'package:employee_clock_in/data/services/check_internet_service.dart';
 import 'package:employee_clock_in/data/services/location_service.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/extensions/address_from_lat_lon.dart';
@@ -10,6 +13,7 @@ import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -27,8 +31,9 @@ class _HomeScreenState extends State<HomeScreen>
   TextEditingController serviceTitanNumController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? address;
-  String  lat = "", long = "";
+  String lat = "", long = "";
   late HomeViewModel homeViewModel;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -36,7 +41,35 @@ class _HomeScreenState extends State<HomeScreen>
     homeViewModel.getUserDetails();
     // homeViewModel.getJobStatus();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getCurrentJobResult();
+      Future.delayed(const Duration(seconds: 30), (){
+        checkNetConnection();
+      });
+    });
+
+    _timer = Timer.periodic(const Duration(seconds: 14), (timer) {
+      checkNetConnection();
+    });
     super.initState();
+  }
+
+  checkNetConnection() {
+    CheckInternetService().checkInternet().then((value) {
+      if (value) {
+        getCurrentJobResult();
+        _timer.cancel();
+      }
+    });
+  }
+
+  getCurrentJobResult() {
+    if (homeViewModel.historyList.isEmpty) {
+      homeViewModel.getJobHistory(
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+          true);
+    }
   }
 
   @override
@@ -411,22 +444,52 @@ class _HomeScreenState extends State<HomeScreen>
     if (homeViewModel.checkInStart.value) {
       if (homeViewModel.buttonStatus.value.compareTo("Click to \nArrive") ==
           0) {
-        homeViewModel.updateArrival(address ?? '', lat, long);
+        LocationService.checkLocationPermissionStatus().then((value) {
+          if (value == LocationPermission.denied ||
+              value == LocationPermission.deniedForever ||
+              address == null) {
+            requestLocationBottomSheet(() {
+              homeViewModel.updateArrival(address ?? '', lat, long);
+            });
+          } else {
+            homeViewModel.updateArrival(address ?? '', lat, long);
+          }
+        });
       } else {
         CustomDialogs.showYesNoDialog(context, "Are you want to Punch Out.",
             onYesTap: () {
           Get.back();
-          homeViewModel.setCheckOutTime(address ?? '', lat, long);
+
+          LocationService.checkLocationPermissionStatus().then((value) {
+            if (value == LocationPermission.denied ||
+                value == LocationPermission.deniedForever ||
+                address == null) {
+              requestLocationBottomSheet(() {
+                homeViewModel.setCheckOutTime(address ?? '', lat, long);
+              });
+            } else {
+              homeViewModel.setCheckOutTime(address ?? '', lat, long);
+            }
+          });
         }, onNoTap: () {
           Get.back();
         });
       }
     } else {
-      requestLocationBottomSheet();
+      requestLocationBottomSheet(() {
+        CustomDialogs.punchInDialog(Get.context!, customerNameController,
+            serviceTitanNumController, _formKey, () {
+          AppLogger.logMessage(
+              "-=>>< ${customerNameController.text.trim()} -- ${serviceTitanNumController.text.trim()}");
+          Get.back();
+          homeViewModel.setCheckInTime(customerNameController.text.trim(),
+              serviceTitanNumController.text.trim(), address ?? '', lat, long);
+        });
+      });
     }
   }
 
-  requestLocationBottomSheet() {
+  requestLocationBottomSheet(VoidCallback voidCallback) {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -481,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen>
                 InkWell(
                   onTap: () {
                     Get.back();
-                    getLocation();
+                    getLocation(voidCallback);
                   },
                   child: Container(
                     padding:
@@ -514,7 +577,7 @@ class _HomeScreenState extends State<HomeScreen>
         });
   }
 
-  getLocation() {
+  getLocation(VoidCallback voidCallback) {
     customerNameController.text = "";
     serviceTitanNumController.text = "";
     LocationService.determinePosition().then((value) async {
@@ -523,18 +586,7 @@ class _HomeScreenState extends State<HomeScreen>
       lat = value.latitude.toString(); // '30.7115';//
       long = value.longitude.toString(); // '76.706'; //
       address = await value.getAddressFromCoordinates();
-      CustomDialogs.punchInDialog(Get.context!, customerNameController,
-          serviceTitanNumController, _formKey, () {
-        AppLogger.logMessage(
-            "-=>>< ${customerNameController.text.trim()} -- ${serviceTitanNumController.text.trim()}");
-        Get.back();
-        homeViewModel.setCheckInTime(
-            customerNameController.text.trim(),
-            serviceTitanNumController.text.trim(),
-            address ?? '',
-            lat,
-            long);
-      });
+      voidCallback();
       /*StreamSubscription<Position> positionStream =*/
       // Geolocator.getPositionStream(locationSettings: locationSettings)
       //     .listen((Position? position) {

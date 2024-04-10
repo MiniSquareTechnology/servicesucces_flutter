@@ -1,13 +1,19 @@
 
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LocationService {
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 100,
   );
+
+  static Future<LocationPermission> checkLocationPermissionStatus() async {
+    return await Geolocator.checkPermission();
+  }
 
  static Future<Position> determinePosition() async {
     // bool serviceEnabled;
@@ -23,6 +29,7 @@ class LocationService {
     }*/
 
     permission = await Geolocator.checkPermission();
+    debugPrint("PERMISSION:- ${permission.name}");
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -37,6 +44,15 @@ class LocationService {
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
+      CustomDialogs.locationDialog(
+          Get.context!, "Location permissions are permanently denied. You can allow this from Application Settings.",
+          onYesTap: () async {
+            Get.back();
+            openAppSettings();
+          }, onNoTap: () {
+        Get.back();
+      });
+
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
