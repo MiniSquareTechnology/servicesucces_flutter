@@ -74,7 +74,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context.getCommonSizedBox,
                 itemRow("Logout", Icons.logout_rounded, () {
                   logoutBtnClick();
-                })
+                }),
+                const Spacer(),
+                Text(
+                  "Developed By",
+                  style: TextStyle(
+                      color: ColorPalette.appPrimaryColor,
+                      fontSize: 14.sp,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Text(
+                  "Mini Square Technologies",
+                  style: TextStyle(
+                      color: ColorPalette.appPrimaryColor,
+                      fontSize: 12.sp,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
               ],
             ),
           ),

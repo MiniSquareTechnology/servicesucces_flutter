@@ -58,16 +58,16 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                 mainItemRow('Customer Name', '${widget.data.customerName}'),
                 mainItemRow('Service Titan Number',
                     '${widget.data.serviceTitanNumber}'),
-                mainItemRow('Dispatch Time', '${widget.data.dispatchTime}'),
-                mainItemRow('Arrival Time', '${widget.data.arrivalTime}'),
-                mainItemRow('Checkout Time', '${widget.data.checkoutTime}'),
-                mainItemRow('Total Hours', '${widget.data.totalHours}'),
-                if (widget.data.jobForm!.isNotEmpty) ...[
+                mainItemRow('Dispatch Time', widget.data.dispatchTime ?? '---'),
+                mainItemRow('Arrival Time', widget.data.arrivalTime ?? '---'),
+                mainItemRow('Checkout Time', widget.data.checkoutTime ?? '---'),
+                mainItemRow('Total Hours', widget.data.totalHours ?? '---'),
+                if (widget.data.jobForm != null && widget.data.jobForm!.isNotEmpty) ...[
                   mainItemRow('Job Form Id', '${widget.data.jobForm![0].id}'),
                   mainItemRow(
-                      'Total Amount', '${widget.data.jobForm![0].totalAmount}'),
+                      'Total Amount', '${widget.data.jobForm![0].totalAmount ?? 0}'),
                   mainItemRow(
-                      'Commission', '${widget.data.jobForm![0].comission} %'),
+                      'Commission', '${widget.data.jobForm![0].comission ?? 0} %'),
                   mainItemRow(
                       'Job Status',
                       homeViewModel.jobStatusList[
@@ -77,7 +77,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                           .compareTo('6') ==
                       0)
                     mainItemRow('Commission Amount',
-                        '${widget.data.jobForm![0].totalAmount! * widget.data.jobForm![0].comission! / 100}'),
+                        '${widget.data.jobForm![0].totalAmount ?? 0 * (widget.data.jobForm![0].comission ?? 0) / 100}'),
                 ],
               ],
             ),

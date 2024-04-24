@@ -24,18 +24,47 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
       backgroundColor: ColorPalette.appPrimaryColor,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Text(
-            // "Mini Square Technologies",
-            "Service Success Pros",
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 26.sp,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w600),
-          ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 0.48.sh,
+              width: 1.0.sw,
+            ),
+            Text(
+              "Service Success Pros",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26.sp,
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w600),
+            ),
+            const Spacer(),
+            Text(
+              "Developed By",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              "Mini Square Technologies",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.sp,
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+          ],
         ),
       ),
     );

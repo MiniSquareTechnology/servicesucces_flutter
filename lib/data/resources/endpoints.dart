@@ -37,11 +37,9 @@ class ApiAuthEndpoints {
 
 class ApiJobEndPoints {
   final ApiEndpoint addJob = ApiEndpoint(
-      path: "add-job",
-      method: RequestType.Post,
-      needsAuthorization: true);
+      path: "add-job", method: RequestType.Post, needsAuthorization: true);
 
-   ApiEndpoint updateJob(String jobId) => ApiEndpoint(
+  ApiEndpoint updateJob(String jobId) => ApiEndpoint(
       path: "update-job/$jobId",
       method: RequestType.MultiPart,
       needsAuthorization: true);
@@ -51,7 +49,7 @@ class ApiJobEndPoints {
       method: RequestType.Post,
       needsAuthorization: true);
 
-  final ApiEndpoint addUpdatePlumbingJobForm = ApiEndpoint(
+/*  final ApiEndpoint addUpdatePlumbingJobForm = ApiEndpoint(
       path: "add-update-job-form-plumbing",
       method: RequestType.Post,
       needsAuthorization: true);
@@ -59,11 +57,11 @@ class ApiJobEndPoints {
   final ApiEndpoint addUpdateTechnicianJobForm = ApiEndpoint(
       path: "add-update-job-form-technician",
       method: RequestType.Post,
-      needsAuthorization: true);
+      needsAuthorization: true);*/
 
-  final ApiEndpoint jobHistory = ApiEndpoint(
-      path: "job-history",
+  ApiEndpoint jobHistory(Map<String, String> params) => ApiEndpoint(
+      path:
+          "job-history?start_date=${params['start_date']}&end_date=${params['end_date']}${params.containsKey('status') ? '&status=${params['status']}' : ''}",
       method: RequestType.Get,
       needsAuthorization: true);
-
 }

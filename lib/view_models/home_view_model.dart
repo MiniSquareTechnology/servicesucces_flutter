@@ -15,6 +15,7 @@ class HomeViewModel extends GetxController {
 
   Rx<bool> showArrival = false.obs;
   Rx<bool> checkInStart = false.obs;
+  Rx<bool> showPercent = false.obs;
   Rx<String> arrivalTimeText = "".obs;
   RxInt userRole = 0.obs;
   Rx<String> userName = "".obs;
@@ -23,6 +24,8 @@ class HomeViewModel extends GetxController {
   Rx<String> checkInTimer = "--:--".obs;
   Rx<String> checkOutTimer = "--:--".obs;
   Rx<String> buttonStatus = "Click to \nDispatch".obs;
+  RxString commissionPercentSelectValue = "Select".obs;
+  RxString sellingTechnicianTaskSelectValue = "Select".obs;
   DateTime? punchIn;
   DateTime? punchOut;
 
@@ -31,8 +34,9 @@ class HomeViewModel extends GetxController {
   TextEditingController serviceTitanNumController = TextEditingController();
   TextEditingController jobTotalController = TextEditingController();
   TextEditingController totalPayController = TextEditingController();
-  TextEditingController amountCollectedController = TextEditingController();
   TextEditingController amountFinancedController = TextEditingController();
+  var amountCollectedController = TextEditingController().obs;
+  var commissionController = TextEditingController().obs;
   Rx<String> jobPercentageValue = "Select".obs;
 
   // Initialize an instance of Stopwatch
@@ -69,6 +73,7 @@ class HomeViewModel extends GetxController {
   ];
   RxList<int> plumbingCheckListSelected = <int>[].obs;
   RxList<int> form3ListSelected = <int>[].obs;
+  RxList<int> jobStatusListFilterSelected = <int>[-1].obs;
 
   @override
   void update([List<Object>? ids, bool condition = true]) {}
@@ -180,7 +185,7 @@ class HomeViewModel extends GetxController {
     //         .getHoursAndMinutes;
     Duration totalTimeDuration = punchOut!.difference(punchIn!);
     totalHours.value =
-        '${totalTimeDuration.inHours.toString().padLeft(2, '0')}:${totalTimeDuration.inMinutes.toString().padLeft(2, '0')}:${(totalTimeDuration.inSeconds % 60).toString().padLeft(2, '0')}';
+        '${totalTimeDuration.inHours.toString().padLeft(2, '0')}:${totalTimeDuration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${(totalTimeDuration.inSeconds % 60).toString().padLeft(2, '0')}';
 
     ///
     Map<String, String> params = {
@@ -198,7 +203,7 @@ class HomeViewModel extends GetxController {
     /// clear job form values
     jobTotalController.text = "";
     totalPayController.text = "";
-    amountCollectedController.text = "";
+    amountCollectedController.value.text = "";
     amountFinancedController.text = "";
     jobPercentageValue.value = "Select";
     totalHours = "--:--".obs;
@@ -220,7 +225,7 @@ class HomeViewModel extends GetxController {
       // Update the UI
       // result in hh:mm:ss format
       timerText.value =
-          '${(_simulatedElapsedTime + _stopwatch.elapsed).inHours.toString().padLeft(2, '0')}:${(_simulatedElapsedTime + _stopwatch.elapsed).inMinutes.toString().padLeft(2, '0')}:${((_simulatedElapsedTime + _stopwatch.elapsed).inSeconds % 60).toString().padLeft(2, '0')}';
+          '${(_simulatedElapsedTime + _stopwatch.elapsed).inHours.toString().padLeft(2, '0')}:${(_simulatedElapsedTime + _stopwatch.elapsed).inMinutes.remainder(60).toString().padLeft(2, '0')}:${((_simulatedElapsedTime + _stopwatch.elapsed).inSeconds % 60).toString().padLeft(2, '0')}';
     });
     // Start the stopwatch
     _stopwatch.start();
@@ -253,6 +258,15 @@ class HomeViewModel extends GetxController {
     } else {
       form3ListSelected.add(index);
     }
+  }
+
+  void updateJobStatusListFilterListValue(int index) {
+    jobStatusListFilterSelected.clear();
+    jobStatusListFilterSelected.add(index);
+  }
+
+  void updateShowPercent(bool res) {
+    showPercent.value = res;
   }
 
   Future<bool> addJobRequest(String customerName, String serviceTitanNumber,
@@ -314,10 +328,10 @@ class HomeViewModel extends GetxController {
 
   Future<bool> addJobFormRequest() async {
     try {
-      if (jobPercentageValue.value.compareTo("Select") == 0) {
+     /* if (jobPercentageValue.value.compareTo("Select") == 0) {
         showErrorDialog("Please Job Percentage");
         return false;
-      }
+      }*/
 
       CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
@@ -328,10 +342,18 @@ class HomeViewModel extends GetxController {
 
       Map<String, String> params = <String, String>{
         "service_titan_number": serviceTitanNumController.text,
-        "total_amount": jobTotalController.text.trim(),
-        "comission": jobPercentageValue.value,
+        "total_amount": amountCollectedController.value.text.trim(),
+        "comission": commissionPercentSelectValue.value, //percent
+        "comission_amount": commissionController.value.text, // calculated amount
         "job_id": jobId,
+        "job_form_type" : "${userRole.value}", // user role
       };
+
+      if(userRole.value == 7) {
+        params.addAll({
+          "task_amount" : sellingTechnicianTaskSelectValue.value.split("-")[1] // only in selling technicians
+        });
+      }
 
       if (isUpdateForm) {
         String jobFormUpdateId = await AppPreferenceStorage.getStringValuesSF(
@@ -361,7 +383,7 @@ class HomeViewModel extends GetxController {
     }
   }
 
-  Future<bool> addUpdatePlumbingJobFormRequest() async {
+/*  Future<bool> addUpdatePlumbingJobFormRequest() async {
     try {
       CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
@@ -454,16 +476,21 @@ class HomeViewModel extends GetxController {
       showErrorDialog(exception.message);
       return false;
     }
-  }
+  }*/
 
   Future<bool> getJobHistory(
-      String startDate, String endDate, bool checkStatus) async {
+      String startDate, String endDate, bool checkExistJob, int status) async {
     try {
       CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
       Map<String, String> params = <String, String>{
         "start_date": startDate,
         "end_date": endDate,
       };
+      if(status >= 0) {
+        params.addAll({
+          "status" : "$status"
+        });
+      }
 
       JobHistoryResponseModel jobHistoryResponseModel =
           await homeRepository.getJobHistoryApi(params);
@@ -472,7 +499,7 @@ class HomeViewModel extends GetxController {
       if (jobHistoryResponseModel.statusCode! == 200) {
         historyList.clear();
         historyList.addAll(jobHistoryResponseModel.data ?? <JobHistoryData>[]);
-        if (checkStatus && historyList.isNotEmpty) {
+        if (checkExistJob && historyList.isNotEmpty) {
           setExistingJobData();
         }
         return true;
@@ -519,6 +546,9 @@ class HomeViewModel extends GetxController {
           historyList.elementAt(0).customerName ?? '';
       serviceTitanNumController.text =
           historyList.elementAt(0).serviceTitanNumber ?? '';
+
+      AppPreferenceStorage.setStringValuesSF(AppPreferenceStorage.jobId,
+          historyList.elementAt(0).id!.toString());
 
       // _reset();
       _simulatedElapsedTime = Duration.zero;

@@ -43,14 +43,14 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getCurrentJobResult();
-      Future.delayed(const Duration(seconds: 30), (){
-        checkNetConnection();
-      });
+      // Future.delayed(const Duration(seconds: 30), (){
+      //   checkNetConnection();
+      // });
     });
 
-    _timer = Timer.periodic(const Duration(seconds: 14), (timer) {
+    /*_timer = Timer.periodic(const Duration(seconds: 14), (timer) {
       checkNetConnection();
-    });
+    });*/
     super.initState();
   }
 
@@ -65,10 +65,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   getCurrentJobResult() {
     if (homeViewModel.historyList.isEmpty) {
+      DateTime now = DateTime.now();
       homeViewModel.getJobHistory(
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-          true);
+          DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, 1)),
+          DateFormat('yyyy-MM-dd').format(now),
+          true, -1); // -1 for all
     }
   }
 
@@ -255,7 +256,8 @@ class _HomeScreenState extends State<HomeScreen>
                       )),
                 ),
                 context.getCommonSizedBox,
-                Obx(() => homeViewModel.showArrival.value &&
+                /// comment account level forms
+               /* Obx(() => homeViewModel.showArrival.value &&
                         homeViewModel.userRole.value == 5
                     ? InkWell(
                         onTap: () {
@@ -323,14 +325,15 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                       )
-                    : Container()),
+                    : Container()),*/
                 Obx(() => homeViewModel.showArrival.value
                     ? SizedBox(height: 10.h)
                     : Container()),
                 Obx(() => homeViewModel.showArrival.value
                     ? InkWell(
                         onTap: () {
-                          launchJobFormScreen(3);
+                          // launchJobFormScreen(3);
+                          launchJobFormScreen(0);
                         },
                         child: Container(
                           width: 1.0.sw,
@@ -345,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "Job Form 3",
+                                "Commissions Form",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.sp,
@@ -448,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen>
           if (value == LocationPermission.denied ||
               value == LocationPermission.deniedForever ||
               address == null) {
-            requestLocationBottomSheet(() {
+            /*requestLocationBottomSheet*/ getLocation(() {
               homeViewModel.updateArrival(address ?? '', lat, long);
             });
           } else {
@@ -464,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen>
             if (value == LocationPermission.denied ||
                 value == LocationPermission.deniedForever ||
                 address == null) {
-              requestLocationBottomSheet(() {
+              /*requestLocationBottomSheet*/getLocation(() {
                 homeViewModel.setCheckOutTime(address ?? '', lat, long);
               });
             } else {
@@ -476,7 +479,7 @@ class _HomeScreenState extends State<HomeScreen>
         });
       }
     } else {
-      requestLocationBottomSheet(() {
+      /*requestLocationBottomSheet*/ getLocation(() {
         CustomDialogs.punchInDialog(Get.context!, customerNameController,
             serviceTitanNumController, _formKey, () {
           AppLogger.logMessage(
@@ -489,7 +492,7 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  requestLocationBottomSheet(VoidCallback voidCallback) {
+  /*requestLocationBottomSheet(VoidCallback voidCallback) {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -513,7 +516,7 @@ class _HomeScreenState extends State<HomeScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 context.getCommonSizedBox,
-                Icon(Icons.location_on_rounded,
+                Icon(Icons.light_mode_outlined,
                     color: ColorPalette.appPrimaryColor, size: 50.w),
                 context.getCommonSizedBox,
                 Text(
@@ -552,7 +555,7 @@ class _HomeScreenState extends State<HomeScreen>
                     decoration: BoxDecoration(
                         color: ColorPalette.appPrimaryColor,
                         borderRadius: BorderRadius.circular(40.r)),
-                    child: Text("Allow only while using this app",
+                    child: Text("Continue",
                         style: TextStyle(fontSize: 14.sp, color: Colors.white)),
                   ),
                 ),
@@ -562,7 +565,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Get.back();
                   },
                   child: Text(
-                    "Don't allow this app",
+                    "Cancel",
                     style: TextStyle(
                         color: Colors.grey,
                         fontSize: 14.sp,
@@ -575,7 +578,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           );
         });
-  }
+  }*/
 
   getLocation(VoidCallback voidCallback) {
     customerNameController.text = "";

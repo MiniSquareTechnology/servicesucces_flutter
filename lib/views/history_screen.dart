@@ -1,7 +1,7 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/utils/calendar_data.dart';
-import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
+import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
@@ -10,6 +10,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+late HomeViewModel homeViewModel;
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -22,26 +24,38 @@ class _HistoryScreenState extends State<HistoryScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOn; // Can be toggled on/off by longpressing a date
-  DateTime _focusedDay = DateTime.now();
+  // DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
   DateFormat dateFormat = DateFormat("d E");
 
   // DateFormat dateFormat2 = DateFormat("d");
-  int listLength = -1;
-  List<String> daysTitle = [];
-  late HomeViewModel homeViewModel;
+  // int listLength = -1;
+  // List<String> daysTitle = [];
+  DateTime now = DateTime.now();
+  late DateTime startDateTime;
+  late DateTime endDateTime;
 
   @override
   void initState() {
     homeViewModel = Get.find(tag: AppBinding.homeViewModelTag);
+    startDateTime = DateTime(now.year, now.month, 1);
+    endDateTime = now;
+
+    _rangeStart = startDateTime;
+    _rangeEnd = endDateTime;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      homeViewModel.getJobHistory(
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()), false);
+        getHistory(-1); // -1 for all
     });
     super.initState();
+  }
+
+  void getHistory(int status) {
+    homeViewModel.getJobHistory(
+        DateFormat('yyyy-MM-dd').format(startDateTime),
+        DateFormat('yyyy-MM-dd').format(endDateTime),
+        false, status);
   }
 
   @override
@@ -63,6 +77,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w500),
             ),
+            actions: [
+              InkWell(
+                onTap: () {
+                  Get.toNamed(RoutePathConstants.historyFiltersScreen)?.then((value) {
+                    if(value != null) {
+                      getHistory(value);
+                    }
+                  });
+                },
+                child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.w, vertical: 16.h),
+                    child: Image.asset(
+                      ImageStorage.filterIcon,
+                      height: 26.w,
+                      width: 30.w,
+                      fit: BoxFit.fill,
+                    )),
+              )
+            ],
           ),
           body: Column(
             children: [
@@ -71,7 +105,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 child: TableCalendar(
                   firstDay: kFirstDay,
                   lastDay: DateTime.now(),
-                  focusedDay: _focusedDay,
+                  focusedDay: endDateTime,
                   calendarFormat: _calendarFormat,
                   headerVisible: true,
                   rowHeight: 40.h,
@@ -95,19 +129,28 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     return isSameDay(_selectedDay, day);
                   },
                   onDaySelected: (selectedDay, focusedDay) {
-                    if (!isSameDay(_selectedDay, selectedDay)) {
+                   /* if (!isSameDay(_selectedDay, selectedDay)) {
                       setState(() {
+                        startDateTime = selectedDay;
+                        getHistory(-1);
                         _selectedDay = selectedDay;
                         _focusedDay = focusedDay;
                         _rangeStart = null; // Important to clean those
                         _rangeEnd = null;
                         _rangeSelectionMode = RangeSelectionMode.toggledOff;
                       });
-                    }
+                    }*/
                   },
                   onRangeSelected: (start, end, focusedDay) {
                     if (end != null) {
-                      listLength = end.difference(start!).inDays;
+                      startDateTime = start!;
+                      endDateTime = end;
+
+                      _rangeStart = startDateTime;
+                      _rangeEnd = endDateTime;
+                      getHistory(-1);
+
+                      /* listLength = end.difference(start!).inDays;
                       AppLogger.logMessage(
                           "-=>$listLength ${dateFormat.format(start)} , ${dateFormat.format(end)} , $focusedDay");
                       daysTitle.clear();
@@ -115,15 +158,36 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         daysTitle.add(dateFormat
                             .format(start.add(Duration(days: index))));
                         return DateTime.now();
-                      });
+                      });*/
                     } else {
-                      listLength = -1;
+                      // listLength = -1;
+                      if(start!.isBefore(startDateTime)) {
+                        DateTime temp = startDateTime;
+                        endDateTime = temp;
+                        startDateTime = start;
+
+                        _rangeStart = startDateTime;
+                        _rangeEnd = endDateTime;
+                      } else if(start.isBefore(endDateTime)) {
+                        startDateTime = start;
+                        endDateTime = endDateTime;
+
+                        _rangeStart = startDateTime;
+                        _rangeEnd = endDateTime;
+                      } else {
+                        DateTime temp = endDateTime;
+                        startDateTime = temp;
+                        endDateTime = start;
+
+                        _rangeStart = startDateTime;
+                        _rangeEnd = endDateTime;
+                      }
+
+                      getHistory(-1);
                     }
 
                     _selectedDay = null;
-                    _focusedDay = focusedDay;
-                    _rangeStart = start;
-                    _rangeEnd = end;
+                    // _focusedDay = focusedDay;
                     _rangeSelectionMode = RangeSelectionMode.toggledOn;
 
                     setState(() {});
@@ -136,7 +200,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     }
                   },
                   onPageChanged: (focusedDay) {
-                    _focusedDay = focusedDay;
+                    // _focusedDay = focusedDay;
                   },
                 ),
               ),
@@ -187,7 +251,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               width: 55.w,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: ColorPalette.appPrimaryColor,
+                color: jobStatus != null && jobStatus.compareTo("6") == 0
+                    ? ColorPalette.inHouseVetBg
+                    : ColorPalette.appPrimaryColor,
                 // color: dayBgColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10.r),
@@ -208,7 +274,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 height: 62.w,
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 decoration: BoxDecoration(
-                  color: ColorPalette.appPrimaryColor.withOpacity(0.8),
+                  color: jobStatus != null && jobStatus.compareTo("6") == 0
+                      ? ColorPalette.inHouseVetBg.withOpacity(0.8)
+                      : ColorPalette.appPrimaryColor.withOpacity(0.8),
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(10.r),
                     bottomRight: Radius.circular(10.r),

@@ -5,5 +5,6 @@ class RoutePathConstants {
   static String changePasswordScreen = "/changePasswordScreen";
   static String jobFormScreen = "/jobFormScreen";
   static String historyDetailScreen = "/historyDetailScreen";
+  static String historyFiltersScreen = "/historyFiltersScreen";
 
 }
