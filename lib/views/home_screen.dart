@@ -467,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen>
             if (value == LocationPermission.denied ||
                 value == LocationPermission.deniedForever ||
                 address == null) {
-              /*requestLocationBottomSheet*/getLocation(() {
+              /*requestLocationBottomSheet*/ getLocation(() {
                 homeViewModel.setCheckOutTime(address ?? '', lat, long);
               });
             } else {
@@ -492,7 +492,7 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  /*requestLocationBottomSheet(VoidCallback voidCallback) {
+/*  requestLocationBottomSheet(VoidCallback voidCallback) {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -531,9 +531,7 @@ class _HomeScreenState extends State<HomeScreen>
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
                   child: Text(
-                    "This app requires that location service are turned on your "
-                    "device and for this app. You must enable them in Settings"
-                    " before using this app.",
+                    "Turn on location services to start Clock In this Application with your location.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.grey,
@@ -555,7 +553,7 @@ class _HomeScreenState extends State<HomeScreen>
                     decoration: BoxDecoration(
                         color: ColorPalette.appPrimaryColor,
                         borderRadius: BorderRadius.circular(40.r)),
-                    child: Text("Continue",
+                    child: Text("Next",
                         style: TextStyle(fontSize: 14.sp, color: Colors.white)),
                   ),
                 ),

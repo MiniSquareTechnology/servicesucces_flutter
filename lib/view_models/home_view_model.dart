@@ -139,6 +139,7 @@ class HomeViewModel extends GetxController {
     buttonStatus.value = "Click to \nArrive";
     totalHours.value = "--:--";
     checkOutTimer.value = "--:--";
+    commissionPercentSelectValue.value = "Select";
 
     ///
     addJobRequest(customerName, serviceTitanNumber, address, lat, long);
@@ -514,7 +515,7 @@ class HomeViewModel extends GetxController {
   }
 
   void showErrorDialog(String msg) {
-    CustomDialogs().showErrorDialog(Get.context!, msg, onTap: () {
+    CustomDialogs.showErrorDialog(Get.context!, msg, onTap: () {
       Get.back();
     });
   }

@@ -149,7 +149,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           conformPasswordController.text.trim());
 
       if (res) {
-        CustomDialogs().showErrorDialog(
+        CustomDialogs.showErrorDialog(
             Get.context!, 'Password updated successfully', onTap: () {
           Get.back();
           Get.back();

@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bottom_bar/bottom_bar.dart';
+import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/views/history_screen.dart';
 import 'package:employee_clock_in/views/home_screen.dart';
 import 'package:employee_clock_in/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -124,7 +126,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            // CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+                            await Future.delayed(const Duration(milliseconds: 500));
+                            // Get.back();
                             exit(0);
                           },
                           style: ElevatedButton.styleFrom(

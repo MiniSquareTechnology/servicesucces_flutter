@@ -113,7 +113,7 @@ class AuthViewModel extends GetxController {
   }
 
   void showErrorDialog(String msg) {
-    CustomDialogs().showErrorDialog(Get.context!, msg, onTap: () {
+    CustomDialogs.showErrorDialog(Get.context!, msg, onTap: () {
       Get.back();
     });
   }

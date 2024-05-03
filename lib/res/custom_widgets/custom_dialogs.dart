@@ -296,7 +296,7 @@ class CustomDialogs {
         });
   }
 
-  void showErrorDialog(BuildContext context, String title,
+  static void showErrorDialog(BuildContext context, String title,
       {GestureTapCallback? onTap, String? message}) {
     ///if error code is more 10000, we will show session expired download
     showDialog(
