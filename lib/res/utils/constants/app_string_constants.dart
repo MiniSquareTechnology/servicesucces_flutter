@@ -30,7 +30,7 @@ class AppStringConstants {
   static const String arrivalTime = "Arrival time";
   static const String clickToArrive = "Click to \nArrive";
   static const String clickToDispatch = "Click to \nDispatch";
-  static const String clickToDone = "Click to \nnDone";
+  static const String clickToDone = "Click to \nDone";
   static const String punchOutAlert = "Are you want to Punch Out.";
   static const String attendanceHistory = "Attendance History";
   static const String noJobForm = "No Job Form";
