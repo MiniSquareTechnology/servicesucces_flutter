@@ -1,6 +1,7 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/app_textfield.dart';
 import 'package:employee_clock_in/res/custom_widgets/buttons/app_filled_button.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Welcome!",
+                    AppStringConstants.welcome,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 24.sp,
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    "Log in to your account",
+                    AppStringConstants.logInTitle,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
@@ -90,8 +91,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     context.getCommonSizedBox,
                     AppTextField(
                       controller: emailController,
-                      title: "Email Address",
-                      hint: "Enter Email Address",
+                      title: AppStringConstants.emailAddress,
+                      hint:
+                          "${AppStringConstants.enter} ${AppStringConstants.emailAddress} ",
                       keyboardType: TextInputType.emailAddress,
                       validator: (email) =>
                           Validators.emailValidator(email!.trim()),
@@ -99,8 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     context.getCommonSizedBox,
                     Obx(() => AppTextField(
                           controller: passwordController,
-                          title: "Password",
-                          hint: "Enter Password",
+                          title: AppStringConstants.password,
+                          hint:
+                              "${AppStringConstants.enter} ${AppStringConstants.password}",
                           keyboardType: TextInputType.text,
                           isObscure: authViewModel.getPasswordObscureValue,
                           validator: (pass) =>
@@ -119,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     context.getCommonSizedBox,
                     context.getCommonSizedBox,
                     AppFilledButton(
-                        text: "LogIn",
+                        text: AppStringConstants.logIn,
                         onTap: () {
                           loginBtnClick();
                         }),

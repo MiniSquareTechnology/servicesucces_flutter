@@ -3,6 +3,7 @@ import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/app_textfield.dart';
 import 'package:employee_clock_in/res/custom_widgets/buttons/app_filled_button.dart';
 import 'package:employee_clock_in/res/custom_widgets/check_box_widget.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/constants/app_user_role.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
@@ -31,8 +32,6 @@ class _JobFormScreenState extends State<JobFormScreen> {
   @override
   void initState() {
     homeViewModel = Get.find(tag: AppBinding.homeViewModelTag);
-    // homeViewModel.jobTotalController.text = "";
-    // homeViewModel.jobPercentageValue.value = "Select";
     super.initState();
   }
 
@@ -51,7 +50,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                 }),
             centerTitle: true,
             title: Text(
-              "Commission Form",
+              AppStringConstants.commissionForm,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -70,7 +69,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
             ),
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: AppFilledButton(
-                text: "Save",
+                text: AppStringConstants.save,
                 onTap: () {
                   saveBtnClick();
                 }),
@@ -87,7 +86,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     context.getCommonSizedBox,
                     AppTextField(
                       // controller: emailController,
-                      title: "Date",
+                      title: AppStringConstants.date,
                       hint: DateFormat('MMM d, yyyy - EEEE')
                           .format(DateTime.now()),
                       readOnly: true,
@@ -98,8 +97,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     context.getCommonSizedBox,
                     AppTextField(
                       controller: homeViewModel.customerNameController,
-                      title: "Customer Name",
-                      // hint: "John doe",
+                      title: AppStringConstants.customerName,
                       readOnly: true,
                       keyboardType: TextInputType.text,
                       validator: (value) =>
@@ -108,8 +106,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     context.getCommonSizedBox,
                     AppTextField(
                       controller: homeViewModel.serviceTitanNumController,
-                      title: "Service Titan Number",
-                      // hint: "220, Main street, Toronto",
+                      title: AppStringConstants.serviceTitanNumber,
                       readOnly: true,
                       keyboardType: TextInputType.text,
                       validator: (value) =>
@@ -189,7 +186,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
         children: [
           AppTextField(
             controller: homeViewModel.amountCollectedController.value,
-            title: "Amount Collected",
+            title: AppStringConstants.amountCollected,
             hint: "0",
             keyboardType: TextInputType.number,
             inputFormatters: [
@@ -202,14 +199,14 @@ class _JobFormScreenState extends State<JobFormScreen> {
                 homeViewModel.updateShowPercent(true);
                 if (isSellingTechnicians() &&
                     homeViewModel.commissionPercentSelectValue
-                            .compareTo("Select") !=
+                            .compareTo(AppStringConstants.select) !=
                         0 &&
                     homeViewModel.sellingTechnicianTaskSelectValue
-                            .compareTo("Select") !=
+                            .compareTo(AppStringConstants.select) !=
                         0) {
                   getPercent();
                 } else if (homeViewModel.commissionPercentSelectValue
-                        .compareTo("Select") !=
+                        .compareTo(AppStringConstants.select) !=
                     0) {
                   getPercent();
                 }
@@ -223,7 +220,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
             Container(
               width: 1.0.sw,
               alignment: Alignment.centerLeft,
-              child: Text('Commission Percent',
+              child: Text(AppStringConstants.commissionPercent,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -274,14 +271,14 @@ class _JobFormScreenState extends State<JobFormScreen> {
                       value?.text ?? '';
                   if (isSellingTechnicians() &&
                       homeViewModel.commissionPercentSelectValue
-                          .compareTo("Select") !=
+                          .compareTo(AppStringConstants.select) !=
                           0 &&
                       homeViewModel.sellingTechnicianTaskSelectValue
-                          .compareTo("Select") !=
+                          .compareTo(AppStringConstants.select) !=
                           0) {
                     getPercent();
                   } else if (!isSellingTechnicians() && homeViewModel.commissionPercentSelectValue
-                      .compareTo("Select") !=
+                      .compareTo(AppStringConstants.select) !=
                       0) {
                     getPercent();
                   }
@@ -309,12 +306,12 @@ class _JobFormScreenState extends State<JobFormScreen> {
           ],
           if (isSellingTechnicians() &&
               homeViewModel.commissionPercentSelectValue.value
-                      .compareTo("Select") !=
+                      .compareTo(AppStringConstants.select) !=
                   0) ...[
             Container(
               width: 1.0.sw,
               alignment: Alignment.centerLeft,
-              child: Text('Task',
+              child: Text(AppStringConstants.task,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -385,13 +382,13 @@ class _JobFormScreenState extends State<JobFormScreen> {
             ),
             context.getCommonSizedBox,
             if (homeViewModel.sellingTechnicianTaskSelectValue.value
-                    .compareTo("Select") !=
+                    .compareTo(AppStringConstants.select) !=
                 0)
               commissionField()
           ],
           !isSellingTechnicians() &&
                   homeViewModel.commissionPercentSelectValue.value
-                          .compareTo("Select") !=
+                          .compareTo(AppStringConstants.select) !=
                       0
               ? commissionField()
               : const SizedBox(
@@ -407,7 +404,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
     return AppTextField(
       readOnly: true,
       controller: homeViewModel.commissionController.value,
-      title: "Commission %",
+      title: "${AppStringConstants.commission} %",
       hint: "0",
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9.]"))],
@@ -424,7 +421,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
       children: [
         AppTextField(
           controller: homeViewModel.jobTotalController,
-          title: "Job Total",
+          title: AppStringConstants.jobTotal,
           hint: "0",
           keyboardType: TextInputType.number,
           inputFormatters: [
@@ -438,7 +435,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
           width: 1.0.sw,
           margin: EdgeInsets.only(bottom: 10.h),
           alignment: Alignment.centerLeft,
-          child: Text("Job Percentage",
+          child: Text(AppStringConstants.jobPercentage,
               textAlign: TextAlign.start,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: ColorPalette.appPrimaryColor,
@@ -492,7 +489,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
       children: [
         AppTextField(
           controller: homeViewModel.amountCollectedController.value,
-          title: "Amount Collected",
+          title: AppStringConstants.amountCollected,
           hint: "0",
           keyboardType: TextInputType.number,
           inputFormatters: [
@@ -504,7 +501,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
         context.getCommonSizedBox,
         AppTextField(
           controller: homeViewModel.amountFinancedController,
-          title: "Amount Financed",
+          title: AppStringConstants.amountFinanced,
           hint: "0",
           keyboardType: TextInputType.number,
           inputFormatters: [
@@ -534,7 +531,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
       children: [
         AppTextField(
           controller: homeViewModel.jobTotalController,
-          title: "Job Total",
+          title: AppStringConstants.jobTotal,
           hint: "0",
           keyboardType: TextInputType.number,
           inputFormatters: [
@@ -552,7 +549,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
         context.getCommonSizedBox,
         AppTextField(
           controller: homeViewModel.totalPayController,
-          title: "Total Pay",
+          title: AppStringConstants.totalPay,
           hint: "0",
           readOnly: true,
           keyboardType: TextInputType.number,

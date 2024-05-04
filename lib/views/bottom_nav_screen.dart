@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bottom_bar/bottom_bar.dart';
-import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/views/history_screen.dart';
 import 'package:employee_clock_in/views/home_screen.dart';
 import 'package:employee_clock_in/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -53,9 +51,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           body: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const HomeScreen(),
-              const HistoryScreen(),
+            children: const [
+              HomeScreen(),
+              HistoryScreen(),
               SettingsScreen(),
             ],
             onPageChanged: (index) {
@@ -76,7 +74,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                 items: <BottomBarItem>[
                   BottomBarItem(
                     icon: Icon(Icons.home, color: Colors.white, size: 24.w),
-                    title: const Text('Home'),
+                    title: const Text(AppStringConstants.home),
                     activeColor: ColorPalette.appSecondaryColor,
                     activeIconColor: Colors.white,
                     activeTitleColor: Colors.white,
@@ -85,7 +83,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                   ),
                   BottomBarItem(
                     icon: Icon(Icons.list, color: Colors.white, size: 24.w),
-                    title: const Text('History'),
+                    title: const Text(AppStringConstants.history),
                     activeColor: ColorPalette.appSecondaryColor,
                     activeIconColor: Colors.white,
                     activeTitleColor: Colors.white,
@@ -94,7 +92,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                   ),
                   BottomBarItem(
                     icon: Icon(Icons.settings, color: Colors.white, size: 24.w),
-                    title: const Text('Settings'),
+                    title: const Text(AppStringConstants.settings),
                     activeColor: ColorPalette.appSecondaryColor,
                     activeIconColor: Colors.white,
                     activeTitleColor: Colors.white,
@@ -120,7 +118,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Are you want to exit this App."),
+                  const Text(AppStringConstants.appExitAlert),
                   const SizedBox(height: 20),
                   Row(
                     children: [
@@ -128,14 +126,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             Navigator.of(context).pop();
-                            // CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
                             await Future.delayed(const Duration(milliseconds: 500));
                             // Get.back();
                             exit(0);
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: ColorPalette.appPrimaryColor),
-                          child: const Text("Yes"),
+                          child: const Text(AppStringConstants.yes),
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -147,7 +144,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorPalette.appPrimaryColor,
                             ),
-                            child: const Text("No",),
+                            child: const Text(AppStringConstants.no),
                           ))
                     ],
                   )

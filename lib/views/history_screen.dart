@@ -1,6 +1,7 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/utils/calendar_data.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
@@ -46,16 +47,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
     _rangeStart = startDateTime;
     _rangeEnd = endDateTime;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        getHistory(-1); // -1 for all
+      getHistory(-1); // -1 for all
     });
     super.initState();
   }
 
   void getHistory(int status) {
-    homeViewModel.getJobHistory(
-        DateFormat('yyyy-MM-dd').format(startDateTime),
-        DateFormat('yyyy-MM-dd').format(endDateTime),
-        false, status);
+    homeViewModel.getJobHistory(DateFormat('yyyy-MM-dd').format(startDateTime),
+        DateFormat('yyyy-MM-dd').format(endDateTime), false, status);
   }
 
   @override
@@ -70,7 +69,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             leading: Container(),
             centerTitle: true,
             title: Text(
-              "Attendance History",
+              AppStringConstants.attendanceHistory,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -80,8 +79,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
             actions: [
               InkWell(
                 onTap: () {
-                  Get.toNamed(RoutePathConstants.historyFiltersScreen)?.then((value) {
-                    if(value != null) {
+                  Get.toNamed(RoutePathConstants.historyFiltersScreen)
+                      ?.then((value) {
+                    if (value != null) {
                       getHistory(value);
                     }
                   });
@@ -129,7 +129,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     return isSameDay(_selectedDay, day);
                   },
                   onDaySelected: (selectedDay, focusedDay) {
-                   /* if (!isSameDay(_selectedDay, selectedDay)) {
+                    /* if (!isSameDay(_selectedDay, selectedDay)) {
                       setState(() {
                         startDateTime = selectedDay;
                         getHistory(-1);
@@ -161,14 +161,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       });*/
                     } else {
                       // listLength = -1;
-                      if(start!.isBefore(startDateTime)) {
+                      if (start!.isBefore(startDateTime)) {
                         DateTime temp = startDateTime;
                         endDateTime = temp;
                         startDateTime = start;
 
                         _rangeStart = startDateTime;
                         _rangeEnd = endDateTime;
-                      } else if(start.isBefore(endDateTime)) {
+                      } else if (start.isBefore(endDateTime)) {
                         startDateTime = start;
                         endDateTime = endDateTime;
 
@@ -321,7 +321,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               horizontal: 10.w, vertical: 4.h),
                           child: Text(
                             jobStatus == null
-                                ? "No Job Form"
+                                ? AppStringConstants.noJobForm
                                 : homeViewModel.jobStatusList[jobStatus]!,
                             style: TextStyle(
                                 color: ColorPalette.appPrimaryColor

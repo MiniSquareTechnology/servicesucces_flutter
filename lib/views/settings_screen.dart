@@ -1,5 +1,6 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
@@ -13,7 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen({super.key});
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -68,16 +69,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 context.getCommonSizedBox,
                 context.getCommonSizedBox,
-                itemRow("Change Password", Icons.password, () {
+                itemRow(AppStringConstants.changePassword, Icons.password, () {
                   Get.toNamed(RoutePathConstants.changePasswordScreen);
                 }),
                 context.getCommonSizedBox,
-                itemRow("Logout", Icons.logout_rounded, () {
+                itemRow(AppStringConstants.logout, Icons.logout_rounded, () {
                   logoutBtnClick();
                 }),
                 const Spacer(),
                 Text(
-                  "Developed By",
+                  AppStringConstants.developedBy,
                   style: TextStyle(
                       color: ColorPalette.appPrimaryColor,
                       fontSize: 14.sp,
@@ -88,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   height: 2,
                 ),
                 Text(
-                  "Mini Square Technologies",
+                  AppStringConstants.miniSquareTechnologies,
                   style: TextStyle(
                       color: ColorPalette.appPrimaryColor,
                       fontSize: 12.sp,
@@ -148,8 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void logoutBtnClick() async {
-    CustomDialogs.showYesNoDialog(
-        Get.context!, "Are you want to Logout this Account.",
+    CustomDialogs.showYesNoDialog(Get.context!, AppStringConstants.logoutAlert,
         onYesTap: () async {
       Get.back();
 
@@ -165,12 +165,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void getUserDetails() async {
     userName = await AppPreferenceStorage.getStringValuesSF(
-        AppPreferenceStorage.userName) ??
-        "Hey William!";
-    if(mounted) {
-      setState(() {
-
-      });
+            AppPreferenceStorage.userName) ??
+        AppStringConstants.dummyText;
+    if (mounted) {
+      setState(() {});
     }
   }
 }

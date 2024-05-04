@@ -3,6 +3,7 @@ import 'package:employee_clock_in/data/repository/home_repository.dart';
 import 'package:employee_clock_in/models/add_job_response_model.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/error/app_error.dart';
 import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
@@ -23,9 +24,9 @@ class HomeViewModel extends GetxController {
   Rx<String> totalHours = "--:--".obs;
   Rx<String> checkInTimer = "--:--".obs;
   Rx<String> checkOutTimer = "--:--".obs;
-  Rx<String> buttonStatus = "Click to \nDispatch".obs;
-  RxString commissionPercentSelectValue = "Select".obs;
-  RxString sellingTechnicianTaskSelectValue = "Select".obs;
+  Rx<String> buttonStatus = AppStringConstants.clickToDispatch.obs;
+  RxString commissionPercentSelectValue = AppStringConstants.select.obs;
+  RxString sellingTechnicianTaskSelectValue = AppStringConstants.select.obs;
   DateTime? punchIn;
   DateTime? punchOut;
 
@@ -37,7 +38,7 @@ class HomeViewModel extends GetxController {
   TextEditingController amountFinancedController = TextEditingController();
   var amountCollectedController = TextEditingController().obs;
   var commissionController = TextEditingController().obs;
-  Rx<String> jobPercentageValue = "Select".obs;
+  Rx<String> jobPercentageValue = AppStringConstants.select.obs;
 
   // Initialize an instance of Stopwatch
   final Stopwatch _stopwatch = Stopwatch();
@@ -52,24 +53,24 @@ class HomeViewModel extends GetxController {
   // History List
   List<JobHistoryData> historyList = <JobHistoryData>[].obs;
   Map<String, String> jobStatusList = <String, String>{
-    "1": "Pending",
-    "2": "Warm Lead",
-    "3": "No Sale",
-    "4": "No Contact",
-    "5": "Cancelled",
-    "6": "Sold"
+    "1": AppStringConstants.pending,
+    "2": AppStringConstants.warmLead,
+    "3": AppStringConstants.noSale,
+    "4": AppStringConstants.noContact,
+    "5": AppStringConstants.cancelled,
+    "6": AppStringConstants.sold
   };
 
   List<int> jobPercentageList = [5, 7, 8, 10];
   List<String> form2CheckList = [
     // "Amount Financed",
-    "I Sold it",
-    "I Did it",
-    "I Set the Lead"
+    AppStringConstants.iSoldIt,
+    AppStringConstants.iDidIt,
+    AppStringConstants.iSetLead
   ];
   List<String> form3CheckList = [
-    "VIP Sold",
-    "I Sold it",
+    AppStringConstants.vipSold,
+    AppStringConstants.iSoldIt,
   ];
   RxList<int> plumbingCheckListSelected = <int>[].obs;
   RxList<int> form3ListSelected = <int>[].obs;
@@ -93,7 +94,7 @@ class HomeViewModel extends GetxController {
   void getUserDetails() async {
     userName.value = await AppPreferenceStorage.getStringValuesSF(
             AppPreferenceStorage.userName) ??
-        "Hey William!";
+        AppStringConstants.dummyText;
     userRole.value = await AppPreferenceStorage.getIntValuesSF(
             AppPreferenceStorage.userRole) ??
         0;
@@ -136,10 +137,10 @@ class HomeViewModel extends GetxController {
     checkInTimer.value = DateFormat().add_jm().format(punchIn!);
     _start();
     checkInStart.value = true;
-    buttonStatus.value = "Click to \nArrive";
+    buttonStatus.value = AppStringConstants.clickToArrive;
     totalHours.value = "--:--";
     checkOutTimer.value = "--:--";
-    commissionPercentSelectValue.value = "Select";
+    commissionPercentSelectValue.value = AppStringConstants.select;
 
     ///
     addJobRequest(customerName, serviceTitanNumber, address, lat, long);
@@ -159,7 +160,7 @@ class HomeViewModel extends GetxController {
     DateTime now = DateTime.now();
     arrivalTimeText.value =
         "${DateFormat().add_jms().format(now)} ${DateFormat().add_yMMMMEEEEd().format(now)}";
-    buttonStatus.value = "Click to \nDone";
+    buttonStatus.value = AppStringConstants.clickToDone;
     showArrival.value = true;
     Map<String, String> params = {
       "arrival_time": DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
@@ -178,7 +179,7 @@ class HomeViewModel extends GetxController {
     punchOut = now;
     checkOutTimer.value = DateFormat().add_jm().format(now);
     _reset();
-    buttonStatus.value = "Click to \nDispatch";
+    buttonStatus.value = AppStringConstants.clickToDispatch;
     checkInStart.value = false;
     showArrival.value = false;
     // totalHours.value =
@@ -206,7 +207,7 @@ class HomeViewModel extends GetxController {
     totalPayController.text = "";
     amountCollectedController.value.text = "";
     amountFinancedController.text = "";
-    jobPercentageValue.value = "Select";
+    jobPercentageValue.value = AppStringConstants.select;
     totalHours = "--:--".obs;
     checkInTimer = "--:--".obs;
     checkOutTimer = "--:--".obs;
@@ -273,7 +274,8 @@ class HomeViewModel extends GetxController {
   Future<bool> addJobRequest(String customerName, String serviceTitanNumber,
       String address, String lat, String long) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       Map<String, String> params = {
         "customer_name": customerName,
         "service_titan_number": serviceTitanNumber,
@@ -307,7 +309,8 @@ class HomeViewModel extends GetxController {
 
   Future<bool> updateJobRequest(Map<String, String> params) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
               AppPreferenceStorage.jobId) ??
           "";
@@ -329,12 +332,13 @@ class HomeViewModel extends GetxController {
 
   Future<bool> addJobFormRequest() async {
     try {
-     /* if (jobPercentageValue.value.compareTo("Select") == 0) {
+      /* if (jobPercentageValue.value.compareTo(AppStringConstants.select) == 0) {
         showErrorDialog("Please Job Percentage");
         return false;
       }*/
 
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
               AppPreferenceStorage.jobId) ??
           "";
@@ -344,15 +348,19 @@ class HomeViewModel extends GetxController {
       Map<String, String> params = <String, String>{
         "service_titan_number": serviceTitanNumController.text,
         "total_amount": amountCollectedController.value.text.trim(),
-        "comission": commissionPercentSelectValue.value, //percent
-        "comission_amount": commissionController.value.text, // calculated amount
+        "comission": commissionPercentSelectValue.value,
+        //percent
+        "comission_amount": commissionController.value.text,
+        // calculated amount
         "job_id": jobId,
-        "job_form_type" : "${userRole.value}", // user role
+        "job_form_type": "${userRole.value}",
+        // user role
       };
 
-      if(userRole.value == 7) {
+      if (userRole.value == 7) {
         params.addAll({
-          "task_amount" : sellingTechnicianTaskSelectValue.value.split("-")[1] // only in selling technicians
+          "task_amount": sellingTechnicianTaskSelectValue.value.split("-")[1]
+          // only in selling technicians
         });
       }
 
@@ -386,7 +394,7 @@ class HomeViewModel extends GetxController {
 
 /*  Future<bool> addUpdatePlumbingJobFormRequest() async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
               AppPreferenceStorage.jobId) ??
           "";
@@ -434,7 +442,7 @@ class HomeViewModel extends GetxController {
 
   Future<bool> addUpdateTechnicianJobFormRequest() async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
       String jobId = await AppPreferenceStorage.getStringValuesSF(
               AppPreferenceStorage.jobId) ??
           "";
@@ -482,15 +490,14 @@ class HomeViewModel extends GetxController {
   Future<bool> getJobHistory(
       String startDate, String endDate, bool checkExistJob, int status) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       Map<String, String> params = <String, String>{
         "start_date": startDate,
         "end_date": endDate,
       };
-      if(status >= 0) {
-        params.addAll({
-          "status" : "$status"
-        });
+      if (status >= 0) {
+        params.addAll({"status": "$status"});
       }
 
       JobHistoryResponseModel jobHistoryResponseModel =
@@ -528,34 +535,33 @@ class HomeViewModel extends GetxController {
       totalHours.value = "--:--";
       checkOutTimer.value = "--:--";
 
-      DateTime now =
-      DateTime.parse(historyList.elementAt(0).dispatchTime!);
+      DateTime now = DateTime.parse(historyList.elementAt(0).dispatchTime!);
 
       if (historyList.elementAt(0).arrivalTime != null) {
         arrivalTimeText.value =
-        "${DateFormat().add_jms().format(now)} ${DateFormat().add_yMMMMEEEEd().format(now)}";
-        buttonStatus.value = "Click to \nDone";
+            "${DateFormat().add_jms().format(now)} ${DateFormat().add_yMMMMEEEEd().format(now)}";
+        buttonStatus.value = AppStringConstants.clickToDone;
         showArrival.value = true;
       } else {
-        buttonStatus.value = "Click to \nArrive";
+        buttonStatus.value = AppStringConstants.clickToArrive;
         showArrival.value = false;
       }
 
       checkInStart.value = true;
 
-      customerNameController.text =
-          historyList.elementAt(0).customerName ?? '';
+      customerNameController.text = historyList.elementAt(0).customerName ?? '';
       serviceTitanNumController.text =
           historyList.elementAt(0).serviceTitanNumber ?? '';
 
-      AppPreferenceStorage.setStringValuesSF(AppPreferenceStorage.jobId,
-          historyList.elementAt(0).id!.toString());
+      AppPreferenceStorage.setStringValuesSF(
+          AppPreferenceStorage.jobId, historyList.elementAt(0).id!.toString());
 
       // _reset();
       _simulatedElapsedTime = Duration.zero;
-      debugPrint("-=> ${historyList.elementAt(0).dispatchTime!} ${DateTime.now().difference(now).inHours}, ${DateTime.now().difference(now).inMinutes}");
-      _simulatedElapsedTime = Duration(
-          milliseconds: DateTime.now().difference(now).inMilliseconds);
+      debugPrint(
+          "-=> ${historyList.elementAt(0).dispatchTime!} ${DateTime.now().difference(now).inHours}, ${DateTime.now().difference(now).inMinutes}");
+      _simulatedElapsedTime =
+          Duration(milliseconds: DateTime.now().difference(now).inMilliseconds);
       _start();
     }
   }

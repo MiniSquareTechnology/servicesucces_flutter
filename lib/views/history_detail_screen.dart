@@ -1,5 +1,6 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                 }),
             centerTitle: true,
             title: Text(
-              "Job History Detail",
+              AppStringConstants.jobHistoryDetail,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -54,29 +55,29 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                mainItemRow('Job Id', '${widget.data.id}'),
-                mainItemRow('Customer Name', '${widget.data.customerName}'),
-                mainItemRow('Service Titan Number',
+                mainItemRow(AppStringConstants.jobId, '${widget.data.id}'),
+                mainItemRow(AppStringConstants.customerName, '${widget.data.customerName}'),
+                mainItemRow(AppStringConstants.serviceTitanNumber,
                     '${widget.data.serviceTitanNumber}'),
-                mainItemRow('Dispatch Time', widget.data.dispatchTime ?? '---'),
-                mainItemRow('Arrival Time', widget.data.arrivalTime ?? '---'),
-                mainItemRow('Checkout Time', widget.data.checkoutTime ?? '---'),
-                mainItemRow('Total Hours', widget.data.totalHours ?? '---'),
+                mainItemRow(AppStringConstants.dispatchTime, widget.data.dispatchTime ?? '---'),
+                mainItemRow(AppStringConstants.arrivalTime, widget.data.arrivalTime ?? '---'),
+                mainItemRow(AppStringConstants.checkoutTime, widget.data.checkoutTime ?? '---'),
+                mainItemRow(AppStringConstants.totalHours, widget.data.totalHours ?? '---'),
                 if (widget.data.jobForm != null && widget.data.jobForm!.isNotEmpty) ...[
-                  mainItemRow('Job Form Id', '${widget.data.jobForm![0].id}'),
+                  mainItemRow(AppStringConstants.jobFormId, '${widget.data.jobForm![0].id}'),
                   mainItemRow(
-                      'Total Amount', '${widget.data.jobForm![0].totalAmount ?? 0}'),
+                      AppStringConstants.totalAmount, '${widget.data.jobForm![0].totalAmount ?? 0}'),
                   mainItemRow(
-                      'Commission', '${widget.data.jobForm![0].comission ?? 0} %'),
+                      AppStringConstants.commission, '${widget.data.jobForm![0].comission ?? 0} %'),
                   mainItemRow(
-                      'Job Status',
+                      AppStringConstants.jobStatus,
                       homeViewModel.jobStatusList[
                           widget.data.jobForm![0].status.toString()]!),
                   if (widget.data.jobForm![0].status
                           .toString()
                           .compareTo('6') ==
                       0)
-                    mainItemRow('Commission Amount',
+                    mainItemRow(AppStringConstants.commissionAmount,
                         '${widget.data.jobForm![0].totalAmount ?? 0 * (widget.data.jobForm![0].comission ?? 0) / 100}'),
                 ],
               ],

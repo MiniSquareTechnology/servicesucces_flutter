@@ -1,6 +1,7 @@
 import 'package:employee_clock_in/data/repository/auth_repository.dart';
 import 'package:employee_clock_in/models/login_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/error/app_error.dart';
 import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
@@ -53,7 +54,7 @@ class AuthViewModel extends GetxController {
 
   Future<bool> emailLogin(String email, String password) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
       Map<String, String> params = {"email": email, "password": password};
       LoginResponseModel model = await authRepository.loginWithEmail(params);
       Get.back();
@@ -74,7 +75,7 @@ class AuthViewModel extends GetxController {
   Future<bool> changePassword(
       String oldPass, String newPass, String conformPass) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
       Map<String, String> params = {
         "old_password": oldPass,
         "new_password": newPass,
@@ -97,7 +98,7 @@ class AuthViewModel extends GetxController {
 
   Future<bool> logOutClick() async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "Loading...");
+      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
       LoginResponseModel model = await authRepository.logOut();
       Get.back();
       if (model.statusCode! == 200) {

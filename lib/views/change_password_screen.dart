@@ -2,6 +2,7 @@ import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/app_textfield.dart';
 import 'package:employee_clock_in/res/custom_widgets/buttons/app_filled_button.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/res/utils/validator/validators.dart';
@@ -50,7 +51,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 }),
             centerTitle: true,
             title: Text(
-              "Change Password",
+              AppStringConstants.changePassword,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -70,8 +71,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   context.getCommonSizedBox,
                   Obx(() => AppTextField(
                       controller: currentPasswordController,
-                      title: "Current Password",
-                      hint: "Enter current password",
+                      title: AppStringConstants.currentPassword,
+                      hint:
+                          "${AppStringConstants.enter} ${AppStringConstants.currentPassword}",
                       keyboardType: TextInputType.text,
                       isObscure: authViewModel.getOldPasswordObscureValue,
                       validator: (pass) =>
@@ -89,8 +91,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   context.getCommonSizedBox,
                   Obx(() => AppTextField(
                       controller: newPasswordController,
-                      title: "New Password",
-                      hint: "Enter new password",
+                      title: AppStringConstants.newPassword,
+                      hint:
+                          "${AppStringConstants.enter} ${AppStringConstants.newPassword}",
                       keyboardType: TextInputType.text,
                       isObscure: authViewModel.getNewPasswordObscureValue,
                       validator: (pass) =>
@@ -108,12 +111,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   context.getCommonSizedBox,
                   Obx(() => AppTextField(
                         controller: conformPasswordController,
-                        title: "Confirm Password",
-                        hint: "Enter confirm password",
+                        title: AppStringConstants.confirmPassword,
+                        hint:
+                            "${AppStringConstants.enter} ${AppStringConstants.confirmPassword}",
                         keyboardType: TextInputType.text,
                         isObscure: authViewModel.getConfirmPasswordObscureValue,
                         validator: (pass) =>
-                            Validators.passwordConfirmValidator(newPasswordController.text.trim(), pass!.trim()),
+                            Validators.passwordConfirmValidator(
+                                newPasswordController.text.trim(),
+                                pass!.trim()),
                         suffix: InkWell(
                           onTap: () {
                             authViewModel.updateConfirmPasswordObscureValue();
@@ -128,7 +134,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   context.getCommonSizedBox,
                   context.getCommonSizedBox,
                   AppFilledButton(
-                      text: "Update Password",
+                      text: AppStringConstants.updatePassword,
                       onTap: () {
                         updatePasswordClick();
                       }),
@@ -150,7 +156,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
       if (res) {
         CustomDialogs.showErrorDialog(
-            Get.context!, 'Password updated successfully', onTap: () {
+            Get.context!, AppStringConstants.passwordUpdatedSuccessfully,
+            onTap: () {
           Get.back();
           Get.back();
         });

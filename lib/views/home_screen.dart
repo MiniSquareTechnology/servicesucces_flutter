@@ -4,6 +4,7 @@ import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/data/services/check_internet_service.dart';
 import 'package:employee_clock_in/data/services/location_service.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/extensions/address_from_lat_lon.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
@@ -69,7 +70,8 @@ class _HomeScreenState extends State<HomeScreen>
       homeViewModel.getJobHistory(
           DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, 1)),
           DateFormat('yyyy-MM-dd').format(now),
-          true, -1); // -1 for all
+          true,
+          -1); // -1 for all
     }
   }
 
@@ -83,19 +85,19 @@ class _HomeScreenState extends State<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.inactive:
-        debugPrint("Inactive");
+        // debugPrint("Inactive");
         break;
       case AppLifecycleState.paused:
-        debugPrint("Paused");
+        // debugPrint("Paused");
         break;
       case AppLifecycleState.resumed:
-        debugPrint("Resumed");
+        // debugPrint("Resumed");
         break;
       case AppLifecycleState.detached:
-        debugPrint("detached:-=>  ${homeViewModel.timerText.value}");
+        // debugPrint("detached:-=>  ${homeViewModel.timerText.value}");
         break;
       default:
-        debugPrint("Suspending");
+        // debugPrint("Suspending");
         break;
     }
   }
@@ -131,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   fontWeight: FontWeight.w500),
                             )),
                         Text(
-                          "Good morning! Mark your attendance",
+                          AppStringConstants.homeTitle,
                           style: TextStyle(
                               color: Colors.grey,
                               fontSize: 12.sp,
@@ -218,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Arrival time",
+                              AppStringConstants.arrivalTime,
                               style: TextStyle(
                                   color: ColorPalette.appSecondaryColor,
                                   fontSize: 16.sp,
@@ -256,8 +258,9 @@ class _HomeScreenState extends State<HomeScreen>
                       )),
                 ),
                 context.getCommonSizedBox,
+
                 /// comment account level forms
-               /* Obx(() => homeViewModel.showArrival.value &&
+                /* Obx(() => homeViewModel.showArrival.value &&
                         homeViewModel.userRole.value == 5
                     ? InkWell(
                         onTap: () {
@@ -348,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                "Commissions Form",
+                                AppStringConstants.commissionForm,
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.sp,
@@ -445,7 +448,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   void mainBtnClick() {
     if (homeViewModel.checkInStart.value) {
-      if (homeViewModel.buttonStatus.value.compareTo("Click to \nArrive") ==
+      if (homeViewModel.buttonStatus.value
+              .compareTo(AppStringConstants.clickToArrive) ==
           0) {
         LocationService.checkLocationPermissionStatus().then((value) {
           if (value == LocationPermission.denied ||
@@ -459,7 +463,7 @@ class _HomeScreenState extends State<HomeScreen>
           }
         });
       } else {
-        CustomDialogs.showYesNoDialog(context, "Are you want to Punch Out.",
+        CustomDialogs.showYesNoDialog(context, AppStringConstants.punchOutAlert,
             onYesTap: () {
           Get.back();
 

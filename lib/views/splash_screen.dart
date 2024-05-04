@@ -1,3 +1,4 @@
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
@@ -21,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: ColorPalette.appPrimaryColor,
       body: Padding(
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 1.0.sw,
             ),
             Text(
-              "Service Success Pros",
+              AppStringConstants.appName,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 26.sp,
@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const Spacer(),
             Text(
-              "Developed By",
+              AppStringConstants.developedBy,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.sp,
@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 4,
             ),
             Text(
-              "Mini Square Technologies",
+              AppStringConstants.miniSquareTechnologies,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 12.sp,
@@ -73,13 +73,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void checkLoginStatus() async {
     String? token = await AppPreferenceStorage.getStringValuesSF(
         AppPreferenceStorage.authToken);
-    Future.delayed(const Duration(seconds: 2), (){
+    Future.delayed(const Duration(seconds: 2), () {
       if (token == null) {
         Get.offAllNamed(RoutePathConstants.loginScreen);
       } else {
         Get.offAllNamed(RoutePathConstants.bottomNavScreen);
       }
     });
-
   }
 }

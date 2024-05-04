@@ -1,6 +1,7 @@
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/res/custom_widgets/buttons/app_filled_button.dart';
 import 'package:employee_clock_in/res/custom_widgets/radio_select_widget.dart';
+import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
@@ -40,7 +41,7 @@ class _HistoryFiltersScreenState extends State<HistoryFiltersScreen> {
                 }),
             centerTitle: true,
             title: Text(
-              "History Filters",
+              AppStringConstants.historyFilters,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -104,7 +105,7 @@ class _HistoryFiltersScreenState extends State<HistoryFiltersScreen> {
                   width: 1.0.sw,
                   alignment: Alignment.center,
                   child: AppFilledButton(
-                      text: "Apply",
+                      text: AppStringConstants.apply,
                       onTap: () {
                         Get.back(
                             result: homeViewModel
