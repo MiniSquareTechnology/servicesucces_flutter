@@ -70,4 +70,8 @@ class AppStringConstants {
   static const String iSetLead = "I Set the Lead";
 
   static const String vipSold = "VIP Sold";
+
+  static const String comments = "Comments";
+  static const String comment = "comment";
+  static const String seeAll = "See All";
 }

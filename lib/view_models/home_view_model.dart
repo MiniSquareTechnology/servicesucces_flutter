@@ -76,6 +76,9 @@ class HomeViewModel extends GetxController {
   RxList<int> form3ListSelected = <int>[].obs;
   RxList<int> jobStatusListFilterSelected = <int>[-1].obs;
 
+  /// Job Detail
+  // RxBool showAllComments = false.obs;
+
   @override
   void update([List<Object>? ids, bool condition = true]) {}
 
