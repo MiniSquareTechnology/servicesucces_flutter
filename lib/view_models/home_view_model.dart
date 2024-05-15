@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:employee_clock_in/data/repository/home_repository.dart';
+import 'package:employee_clock_in/models/add_comment_response_model.dart';
 import 'package:employee_clock_in/models/add_job_response_model.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
@@ -20,6 +21,7 @@ class HomeViewModel extends GetxController {
   Rx<String> arrivalTimeText = "".obs;
   RxInt userRole = 0.obs;
   Rx<String> userName = "".obs;
+  Rx<String> userId = "".obs;
   Rx<String> currentDate = "".obs;
   Rx<String> totalHours = "--:--".obs;
   Rx<String> checkInTimer = "--:--".obs;
@@ -101,6 +103,9 @@ class HomeViewModel extends GetxController {
     userRole.value = await AppPreferenceStorage.getIntValuesSF(
             AppPreferenceStorage.userRole) ??
         0;
+    userId.value = await AppPreferenceStorage.getStringValuesSF(
+        AppPreferenceStorage.userId) ??
+        "";
   }
 
   void getJobFormData() async {
@@ -521,6 +526,31 @@ class HomeViewModel extends GetxController {
       Get.back();
       showErrorDialog(exception.message);
       return false;
+    }
+  }
+
+  Future<AddCommentResponseModel?> addJobComment(String jobId, String comment) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+      Map<String, String> params = <String, String>{
+        "comment": comment,
+        "job_id": jobId,
+      };
+
+      AddCommentResponseModel addCommentResponseModel =
+          await homeRepository.postJobCommentApi(params);
+      Get.back();
+
+      if (addCommentResponseModel.statusCode! == 200) {
+        return addCommentResponseModel;
+      } else {
+        return null;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      showErrorDialog(exception.message);
+      return null;
     }
   }
 

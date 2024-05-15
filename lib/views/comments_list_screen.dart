@@ -1,33 +1,37 @@
+import 'package:employee_clock_in/data/binding/app_binding.dart';
+import 'package:employee_clock_in/models/add_comment_response_model.dart';
+import 'package:employee_clock_in/models/job_history_response_model.dart';
+import 'package:employee_clock_in/res/custom_widgets/message_widget.dart';
 import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
+import 'package:employee_clock_in/view_models/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class CommentsListScreen extends StatefulWidget {
-  const CommentsListScreen({super.key});
+  final JobHistoryData jobData;
+
+  const CommentsListScreen({super.key, required this.jobData});
 
   @override
   State<CommentsListScreen> createState() => _CommentsListScreenState();
 }
 
 class _CommentsListScreenState extends State<CommentsListScreen> {
-  final List<String> _messages = [
-    "Test Comment here",
-    "Hello william",
-  ];
-
   final TextEditingController _textController = TextEditingController();
+  late HomeViewModel homeViewModel;
 
-  void _handleSubmitted(String text) {
-    _messages.add(text);
-    _textController.clear();
-    setState(() {});
+  @override
+  void initState() {
+    homeViewModel = Get.find(tag: AppBinding.homeViewModelTag);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade400,
       appBar: AppBar(
         backgroundColor: ColorPalette.appPrimaryColor,
         leading: BackButton(
@@ -37,7 +41,7 @@ class _CommentsListScreenState extends State<CommentsListScreen> {
             }),
         centerTitle: true,
         title: Text(
-          AppStringConstants.comments,
+          AppStringConstants.admin,
           style: TextStyle(
               color: Colors.white,
               fontSize: 18.sp,
@@ -49,36 +53,13 @@ class _CommentsListScreenState extends State<CommentsListScreen> {
         children: <Widget>[
           Flexible(
             child: ListView.builder(
-              padding: EdgeInsets.all(20.h),
-              itemCount: _messages.length,
+              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 6.w),
+              itemCount: widget.jobData.editJobs?.length,
               itemBuilder: (BuildContext context, int index) {
-                return Align(
-                  alignment: (index % 2) != 0
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: (index % 2) != 0
-                            ? ColorPalette.appPrimaryColor.withOpacity(0.8)
-                            : ColorPalette.appPrimaryColor,
-                        borderRadius: BorderRadius.circular(10.r)),
-                    margin: EdgeInsets.only(
-                      top: 10.h,
-                      left: (index % 2) != 0 ? 0 : 0.4.sw,
-                      right: (index % 2) != 0 ? 0.4.sw : 0,
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                    child: Text(
-                      _messages[index],
-                      style: TextStyle(
-                          color: ColorPalette.white,
-                          fontSize: 12.sp,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                );
+                EditJobs msgData = widget.jobData.editJobs!.elementAt(index);
+                bool isMyMsg =
+                    homeViewModel.userId.compareTo("${msgData.userId}") == 0;
+                return MessageWidget(msgData: msgData, isMyMsg: isMyMsg);
               },
             ),
           ),
@@ -97,7 +78,8 @@ class _CommentsListScreenState extends State<CommentsListScreen> {
                     child: TextFormField(
                       controller: _textController,
                       decoration: InputDecoration(
-                        hintText: "${AppStringConstants.enter} ${AppStringConstants.comment}",
+                        hintText:
+                            "${AppStringConstants.enter} ${AppStringConstants.comment}",
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.symmetric(
@@ -110,7 +92,7 @@ class _CommentsListScreenState extends State<CommentsListScreen> {
                     )),
                 IconButton(
                     onPressed: () {
-                      _handleSubmitted(_textController.text);
+                      sendButtonClick();
                     },
                     icon: Icon(
                       Icons.send,
@@ -123,5 +105,26 @@ class _CommentsListScreenState extends State<CommentsListScreen> {
         ],
       ),
     );
+  }
+
+  sendButtonClick() async {
+    homeViewModel
+        .addJobComment(widget.jobData.id!.toString(), _textController.text)
+        .then((value) {
+      if (value != null) {
+        AddCommentResponseModel msgData = value;
+        widget.jobData.editJobs!.add(EditJobs(
+            id: msgData.data!.id,
+            userId: msgData.data!.userId,
+            jobId: int.parse(msgData.data!.jobId!),
+            comment: msgData.data!.comment,
+            createdAt: msgData.data!.createdAt,
+            updatedAt: msgData.data!.updatedAt));
+      }
+      _textController.text = '';
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 }

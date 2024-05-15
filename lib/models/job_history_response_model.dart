@@ -62,19 +62,19 @@ class JobHistoryResponseModel {
 }
 
 class JobHistoryData {
-  JobHistoryData({
-    num? id,
-    String? customerName,
-    String? serviceTitanNumber,
-    num? userId,
-    String? dispatchTime,
-    String? arrivalTime,
-    String? checkoutTime,
-    String? createdAt,
-    String? updatedAt,
-    String? totalHours,
-    List<JobForm>? jobForm,
-  }) {
+  JobHistoryData(
+      {num? id,
+      String? customerName,
+      String? serviceTitanNumber,
+      num? userId,
+      String? dispatchTime,
+      String? arrivalTime,
+      String? checkoutTime,
+      String? createdAt,
+      String? updatedAt,
+      String? totalHours,
+      List<JobForm>? jobForm,
+      List<EditJobs>? editJobs}) {
     _id = id;
     _customerName = customerName;
     _serviceTitanNumber = serviceTitanNumber;
@@ -86,6 +86,7 @@ class JobHistoryData {
     _updatedAt = updatedAt;
     _totalHours = totalHours;
     _jobForm = jobForm;
+    _editJobs = editJobs;
   }
 
   JobHistoryData.fromJson(dynamic json) {
@@ -105,6 +106,12 @@ class JobHistoryData {
         _jobForm?.add(JobForm.fromJson(v));
       });
     }
+    if (json['edit_jobs'] != null) {
+      _editJobs = <EditJobs>[];
+      json['edit_jobs'].forEach((v) {
+        _editJobs!.add(EditJobs.fromJson(v));
+      });
+    }
   }
 
   num? _id;
@@ -118,20 +125,21 @@ class JobHistoryData {
   String? _updatedAt;
   String? _totalHours;
   List<JobForm>? _jobForm;
+  List<EditJobs>? _editJobs;
 
-  JobHistoryData copyWith({
-    num? id,
-    String? customerName,
-    String? serviceTitanNumber,
-    num? userId,
-    String? dispatchTime,
-    String? arrivalTime,
-    String? checkoutTime,
-    String? createdAt,
-    String? updatedAt,
-    String? totalHours,
-    List<JobForm>? jobForm,
-  }) =>
+  JobHistoryData copyWith(
+          {num? id,
+          String? customerName,
+          String? serviceTitanNumber,
+          num? userId,
+          String? dispatchTime,
+          String? arrivalTime,
+          String? checkoutTime,
+          String? createdAt,
+          String? updatedAt,
+          String? totalHours,
+          List<JobForm>? jobForm,
+          List<EditJobs>? editJobs}) =>
       JobHistoryData(
         id: id ?? _id,
         customerName: customerName ?? _customerName,
@@ -144,6 +152,7 @@ class JobHistoryData {
         updatedAt: updatedAt ?? _updatedAt,
         totalHours: totalHours ?? _totalHours,
         jobForm: jobForm ?? _jobForm,
+        editJobs: editJobs ?? _editJobs,
       );
 
   num? get id => _id;
@@ -168,6 +177,8 @@ class JobHistoryData {
 
   List<JobForm>? get jobForm => _jobForm;
 
+  List<EditJobs>? get editJobs => _editJobs;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = _id;
@@ -182,6 +193,9 @@ class JobHistoryData {
     map['total_hours'] = _totalHours;
     if (_jobForm != null) {
       map['job_form'] = _jobForm?.map((v) => v.toJson()).toList();
+    }
+    if (editJobs != null) {
+      map['edit_jobs'] = editJobs!.map((v) => v.toJson()).toList();
     }
     return map;
   }
@@ -285,5 +299,50 @@ class JobForm {
     map['created_at'] = _createdAt;
     map['updated_at'] = _updatedAt;
     return map;
+  }
+}
+
+class EditJobs {
+  int? id;
+  int? userId;
+  int? jobId;
+  dynamic oldData;
+  dynamic newData;
+  String? comment;
+  String? createdAt;
+  String? updatedAt;
+
+  EditJobs(
+      {this.id,
+      this.userId,
+      this.jobId,
+      this.oldData,
+      this.newData,
+      this.comment,
+      this.createdAt,
+      this.updatedAt});
+
+  EditJobs.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    jobId = json['job_id'];
+    oldData = json['old_data'];
+    newData = json['new_data'];
+    comment = json['comment'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['user_id'] = userId;
+    data['job_id'] = jobId;
+    data['old_data'] = oldData;
+    data['new_data'] = newData;
+    data['comment'] = comment;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
   }
 }

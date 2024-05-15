@@ -17,7 +17,10 @@ class AppRoutes {
       RoutePathConstants.splashScreen: (context) => const SplashScreen(),
       RoutePathConstants.loginScreen: (context) => const LoginScreen(),
       RoutePathConstants.bottomNavScreen: (context) => const BottomNavScreen(),
-      RoutePathConstants.commentsListScreen: (context) => const CommentsListScreen(),
+      RoutePathConstants.commentsListScreen: (context) {
+        Map params = ModalRoute.of(context)!.settings.arguments as Map;
+        return CommentsListScreen(jobData: params['jobData'] as JobHistoryData);
+      },
       RoutePathConstants.jobFormScreen: (context) {
         Map params = ModalRoute.of(context)!.settings.arguments as Map;
         return JobFormScreen(

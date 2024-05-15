@@ -244,7 +244,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        homeViewModel.commissionPercentSelectValue.value,
+                        "${homeViewModel.commissionPercentSelectValue.value} %",
                         style: TextStyle(
                           fontSize: 15.sp,
                           color: ColorPalette.appPrimaryColor,
@@ -335,7 +335,7 @@ class _JobFormScreenState extends State<JobFormScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        homeViewModel.sellingTechnicianTaskSelectValue.value,
+                        "${homeViewModel.sellingTechnicianTaskSelectValue.value} %",
                         style: TextStyle(
                           fontSize: 15.sp,
                           color: ColorPalette.appPrimaryColor,
@@ -674,7 +674,7 @@ abstract class MenuItems {
 
   static Widget buildItem(MenuItem item) {
     return Text(
-      item.text,
+      "${item.text} %",
       style: TextStyle(
         fontSize: 15.sp,
         color: ColorPalette.appPrimaryColor,

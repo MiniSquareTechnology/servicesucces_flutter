@@ -44,6 +44,11 @@ class ApiJobEndPoints {
       method: RequestType.MultiPart,
       needsAuthorization: true);
 
+  final ApiEndpoint addComment = ApiEndpoint(
+      path: "add-comment",
+      method: RequestType.Post,
+      needsAuthorization: true);
+
   final ApiEndpoint addJobForm = ApiEndpoint(
       path: "add-update-job-form",
       method: RequestType.Post,

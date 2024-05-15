@@ -1,5 +1,6 @@
 import 'package:employee_clock_in/data/resources/endpoints.dart';
 import 'package:employee_clock_in/data/services/http_client.dart';
+import 'package:employee_clock_in/models/add_comment_response_model.dart';
 import 'package:employee_clock_in/models/add_job_response_model.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 
@@ -49,11 +50,21 @@ class HomeRepository {
     );
   }*/
 
-  Future<JobHistoryResponseModel> getJobHistoryApi(Map<String, String> params) async {
+  Future<JobHistoryResponseModel> getJobHistoryApi(
+      Map<String, String> params) async {
     return await iClient.handleRequest(
       apiEndpoint: ApiEndpointProvider().homeEndPoints.jobHistory(params),
       // body: params,
       responseConverter: (json) => JobHistoryResponseModel.fromJson(json),
+    );
+  }
+
+  Future<AddCommentResponseModel> postJobCommentApi(
+      Map<String, String> params) async {
+    return await iClient.handleRequest(
+      apiEndpoint: ApiEndpointProvider().homeEndPoints.addComment,
+      body: params,
+      responseConverter: (json) => AddCommentResponseModel.fromJson(json),
     );
   }
 }
