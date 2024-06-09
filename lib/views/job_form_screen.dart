@@ -60,13 +60,11 @@ class _JobFormScreenState extends State<JobFormScreen> {
           ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: ColorPalette.appPrimaryColor,
-                  width: 1.0,
-                )
-              )
-            ),
+                border: Border(
+                    top: BorderSide(
+              color: ColorPalette.appPrimaryColor,
+              width: 1.0,
+            ))),
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: AppFilledButton(
                 text: AppStringConstants.save,
@@ -271,15 +269,16 @@ class _JobFormScreenState extends State<JobFormScreen> {
                       value?.text ?? '';
                   if (isSellingTechnicians() &&
                       homeViewModel.commissionPercentSelectValue
-                          .compareTo(AppStringConstants.select) !=
+                              .compareTo(AppStringConstants.select) !=
                           0 &&
                       homeViewModel.sellingTechnicianTaskSelectValue
-                          .compareTo(AppStringConstants.select) !=
+                              .compareTo(AppStringConstants.select) !=
                           0) {
                     getPercent();
-                  } else if (!isSellingTechnicians() && homeViewModel.commissionPercentSelectValue
-                      .compareTo(AppStringConstants.select) !=
-                      0) {
+                  } else if (!isSellingTechnicians() &&
+                      homeViewModel.commissionPercentSelectValue
+                              .compareTo(AppStringConstants.select) !=
+                          0) {
                     getPercent();
                   }
                   // MenuItems.onChanged(context, value!);
@@ -395,6 +394,16 @@ class _JobFormScreenState extends State<JobFormScreen> {
                   height: 0,
                   width: 0,
                 ),
+          SizedBox(
+            height: 6.h,
+          ),
+          CheckBoxWidget(
+              label: AppStringConstants.setALead,
+              selected: homeViewModel.isLead.value,
+              index: 0,
+              onTap: (index) {
+                homeViewModel.updateIsLead();
+              })
         ],
       );
     });
@@ -572,29 +581,6 @@ class _JobFormScreenState extends State<JobFormScreen> {
     );
   }
 
-  void saveBtnClick() async {
-    // if (_formKey.currentState!.validate()) {
-    bool res = false;
-    // if (widget.formType == 1) {
-    res = await homeViewModel.addJobFormRequest();
-    // }
-
-    /*if (widget.formType == 2) {
-        res = await homeViewModel.addUpdatePlumbingJobFormRequest();
-      }
-
-      if (widget.formType == 3) {
-        res = await homeViewModel.addUpdateTechnicianJobFormRequest();
-      } else {
-        res = true;
-      }*/
-
-    if (res) {
-      Get.back();
-    }
-    // }
-  }
-
   getPercent() {
     double res = 0;
     res = (num.parse(homeViewModel.commissionPercentSelectValue.value) *
@@ -613,6 +599,28 @@ class _JobFormScreenState extends State<JobFormScreen> {
     return homeViewModel.userRole.value ==
         AppUserRole.userRoleSellingTechnicians;
   }
+
+
+  void saveBtnClick() async {
+    if (homeViewModel.amountCollectedController.value.text.trim().isEmpty) {
+      return;
+    }
+
+    if (homeViewModel.commissionPercentSelectValue.value
+        .compareTo(AppStringConstants.select) ==
+        0) {
+      return;
+    }
+
+    if (homeViewModel.commissionController.value.text.trim().isEmpty) {
+      return;
+    }
+    bool res = await homeViewModel.addJobFormRequest();
+    if (res) {
+      Get.back();
+    }
+  }
+
 }
 
 class MenuItem {

@@ -21,6 +21,7 @@ class AppStringConstants {
   static const String select = "Select";
   static const String commissionPercent = "Commission Percent";
   static const String task = "Task";
+  static const String setALead = "Set a Lead ?";
   static const String commission = "Commission";
   static const String jobTotal = "Job Total";
   static const String jobPercentage = "Job Percentage";

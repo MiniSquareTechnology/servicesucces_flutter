@@ -48,6 +48,16 @@ class _CommentsListScreenState extends State<CommentsListScreen> {
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.w500),
         ),
+        /*actions: [
+          InkWell(
+            onTap: () {
+              homeViewModel.getJobHistory(startDate, endDate, checkExistJob, status);
+            },
+            child: Padding(padding: EdgeInsets.symmetric(horizontal: 14.w),
+            child: Icon(Icons.refresh, size: 24.w, color: Colors.white,),
+            ),
+          )
+        ],*/
       ),
       body: Column(
         children: <Widget>[

@@ -51,6 +51,7 @@ class HomeViewModel extends GetxController {
 
   // The result which will be displayed on the screen
   final Rx<String> timerText = ''.obs;
+  RxBool isLead = false.obs;
 
   // History List
   List<JobHistoryData> historyList = <JobHistoryData>[].obs;
@@ -78,8 +79,6 @@ class HomeViewModel extends GetxController {
   RxList<int> form3ListSelected = <int>[].obs;
   RxList<int> jobStatusListFilterSelected = <int>[-1].obs;
 
-  /// Job Detail
-  // RxBool showAllComments = false.obs;
 
   @override
   void update([List<Object>? ids, bool condition = true]) {}
@@ -275,6 +274,10 @@ class HomeViewModel extends GetxController {
     jobStatusListFilterSelected.add(index);
   }
 
+  void updateIsLead() {
+    isLead.value = !isLead.value;
+  }
+
   void updateShowPercent(bool res) {
     showPercent.value = res;
   }
@@ -362,7 +365,7 @@ class HomeViewModel extends GetxController {
         // calculated amount
         "job_id": jobId,
         "job_form_type": "${userRole.value}",
-        // user role
+        "is_lead" : isLead.value ? "1" : "0"
       };
 
       if (userRole.value == 7) {
