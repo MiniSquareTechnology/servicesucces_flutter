@@ -26,6 +26,26 @@ class ApiAuthEndpoints {
     method: RequestType.Post,
   );
 
+  final ApiEndpoint forgotPassword = ApiEndpoint(
+    path: "forgotPassword",
+    method: RequestType.Post,
+  );
+
+  final ApiEndpoint verifyOtp = ApiEndpoint(
+    path: "verifyOtp",
+    method: RequestType.Post,
+  );
+
+  final ApiEndpoint resendOtp = ApiEndpoint(
+    path: "resendOtp",
+    method: RequestType.Post,
+  );
+
+  final ApiEndpoint resetPassword = ApiEndpoint(
+    path: "resetPassword",
+    method: RequestType.Post,
+  );
+
   final ApiEndpoint changePassword = ApiEndpoint(
       path: "changePassword",
       method: RequestType.Post,

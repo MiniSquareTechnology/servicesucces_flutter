@@ -7,5 +7,8 @@ class RoutePathConstants {
   static String historyDetailScreen = "/historyDetailScreen";
   static String historyFiltersScreen = "/historyFiltersScreen";
   static String commentsListScreen = "/commentsListScreen";
+  static String forgotPasswordScreen = "/forgotPasswordScreen";
+  static String verifyOtpScreen = "/verifyOtpScreen";
+  static String resetPasswordScreen = "/resetPasswordScreen";
 
 }

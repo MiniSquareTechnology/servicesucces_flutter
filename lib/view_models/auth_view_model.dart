@@ -1,4 +1,5 @@
 import 'package:employee_clock_in/data/repository/auth_repository.dart';
+import 'package:employee_clock_in/models/forgot_password_response_model.dart';
 import 'package:employee_clock_in/models/login_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
@@ -54,7 +55,8 @@ class AuthViewModel extends GetxController {
 
   Future<bool> emailLogin(String email, String password) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       Map<String, String> params = {"email": email, "password": password};
       LoginResponseModel model = await authRepository.loginWithEmail(params);
       Get.back();
@@ -72,10 +74,96 @@ class AuthViewModel extends GetxController {
     }
   }
 
+  Future<ForgotPasswordResponseModel?> forgotPassword(String email) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+      Map<String, String> params = {"email": email};
+      ForgotPasswordResponseModel model =
+          await authRepository.forgotPassword(params);
+      Get.back();
+      if (model.statusCode! == 200) {
+        return model;
+      } else {
+        return null;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      AppLogger.logMessage("------>>>> ${exception.code}");
+      showErrorDialog(exception.message);
+      return null;
+    }
+  }
+
+  Future<ForgotPasswordResponseModel?> verifyOtp(
+      String userId, String otp) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+      Map<String, String> params = {"user_id": userId, "otp": otp};
+      ForgotPasswordResponseModel model =
+          await authRepository.verifyOtp(params);
+      Get.back();
+      if (model.statusCode! == 200) {
+        return model;
+      } else {
+        return null;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      AppLogger.logMessage("------>>>> ${exception.code}");
+      showErrorDialog(exception.message);
+      return null;
+    }
+  }
+
+  Future<void> resendOtp(String userId) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+      Map<String, String> params = {"user_id": userId};
+      ForgotPasswordResponseModel model =
+          await authRepository.resendOtp(params);
+      Get.back();
+      showErrorDialog(model.message ?? '');
+    } on AppError catch (exception) {
+      Get.back();
+      AppLogger.logMessage("------>>>> ${exception.code}");
+      showErrorDialog(exception.message);
+    }
+  }
+
+  Future<ForgotPasswordResponseModel?> resetPassword(
+      String userId, String newPassword, String confirmPassword) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+      Map<String, String> params = {
+        "user_id": userId,
+        "new_password": newPassword,
+        "confirm_new_password": confirmPassword,
+      };
+      ForgotPasswordResponseModel model =
+          await authRepository.resetPassword(params);
+      Get.back();
+      if (model.statusCode! == 200) {
+        return model;
+      } else {
+        return null;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      AppLogger.logMessage("------>>>> ${exception.code}");
+      showErrorDialog(exception.message);
+      return null;
+    }
+  }
+
   Future<bool> changePassword(
       String oldPass, String newPass, String conformPass) async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       Map<String, String> params = {
         "old_password": oldPass,
         "new_password": newPass,
@@ -98,7 +186,8 @@ class AuthViewModel extends GetxController {
 
   Future<bool> logOutClick() async {
     try {
-      CustomDialogs.showLoadingDialog(Get.context!, "${AppStringConstants.loading}...");
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
       LoginResponseModel model = await authRepository.logOut();
       Get.back();
       if (model.statusCode! == 200) {

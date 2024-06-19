@@ -120,6 +120,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )),
                     context.getCommonSizedBox,
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed(RoutePathConstants.forgotPasswordScreen);
+                      },
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '${AppStringConstants.forgotPassword}?',
+                          style: TextStyle(
+                              color: ColorPalette.appPrimaryColor,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+                    context.getCommonSizedBox,
                     context.getCommonSizedBox,
                     AppFilledButton(
                         text: AppStringConstants.logIn,
