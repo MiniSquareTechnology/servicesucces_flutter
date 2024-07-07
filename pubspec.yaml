@@ -24,6 +24,10 @@ dependencies:
   shared_preferences: ^2.2.0
   permission_handler:
   dropdown_button2:
+  firebase_core:
+  firebase_messaging:
+  flutter_local_notifications:
+  webview_flutter:
 
 dev_dependencies:
   flutter_test:

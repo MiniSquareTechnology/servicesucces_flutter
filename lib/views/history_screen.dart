@@ -236,7 +236,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return InkWell(
       onTap: () {
         Get.toNamed(RoutePathConstants.historyDetailScreen,
-            arguments: {"data": data});
+            arguments: {"id": '${data.id}'});
       },
       child: Container(
         decoration: BoxDecoration(

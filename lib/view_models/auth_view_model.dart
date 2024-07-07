@@ -57,7 +57,14 @@ class AuthViewModel extends GetxController {
     try {
       CustomDialogs.showLoadingDialog(
           Get.context!, "${AppStringConstants.loading}...");
-      Map<String, String> params = {"email": email, "password": password};
+      String fcmToken = await AppPreferenceStorage.getStringValuesSF(
+              AppPreferenceStorage.fcmToken) ??
+          '';
+      Map<String, String> params = {
+        "email": email,
+        "password": password,
+        'fcm_token': fcmToken
+      };
       LoginResponseModel model = await authRepository.loginWithEmail(params);
       Get.back();
       if (model.statusCode! == 200) {

@@ -66,6 +66,7 @@ class AppStringConstants {
   static const String history = "History";
   static const String settings = "Settings";
   static const String loading = "Loading";
+  static const String notificationDetail = "Notification Detail";
 
   static const String pending = "Pending";
   static const String warmLead = "Warm Lead";

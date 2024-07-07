@@ -9,6 +9,12 @@ class AppPreferenceStorage {
   static final AppPreferenceStorage instance =
       AppPreferenceStorage._privateConstructor();
 
+  /// Notification Types
+  static String chatNotification = '1';
+  static String cronNotification = '2';
+  static String urlNotification = '3';
+  static String withoutUrlNotification = '4';
+
   static String userId = 'userId';
   static String userName = "userName";
   static String userRole = "userRole";
@@ -22,6 +28,10 @@ class AppPreferenceStorage {
   static String authToken = "authToken";
   static String selectedCountry = 'selectedCountry';
   static String deviceToken = 'deviceToken';
+  static String fcmToken = 'fcmToken';
+  static String fcmJobId = 'fcmJobId';
+  static String fcmType = 'fcmType';
+  static String fcmLinkUrl = 'fcmLinkUrl';
 
   static String customerName = 'customerName';
   static String serviceTitanNumber = 'serviceTitanNumber';

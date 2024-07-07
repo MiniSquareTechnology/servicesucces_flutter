@@ -59,6 +59,11 @@ class ApiJobEndPoints {
   final ApiEndpoint addJob = ApiEndpoint(
       path: "add-job", method: RequestType.Post, needsAuthorization: true);
 
+  ApiEndpoint getJobDetail(String jobId) => ApiEndpoint(
+      path: "getJobById/$jobId",
+      method: RequestType.Get,
+      needsAuthorization: true);
+
   ApiEndpoint updateJob(String jobId) => ApiEndpoint(
       path: "update-job/$jobId",
       method: RequestType.MultiPart,

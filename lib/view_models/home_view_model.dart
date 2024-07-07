@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:employee_clock_in/data/repository/home_repository.dart';
 import 'package:employee_clock_in/models/add_comment_response_model.dart';
 import 'package:employee_clock_in/models/add_job_response_model.dart';
+import 'package:employee_clock_in/models/job_detail_response_model.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
@@ -497,6 +498,26 @@ class HomeViewModel extends GetxController {
       return false;
     }
   }*/
+
+  Future<JobDetailResponseModel?> getJobDetail(String jobId) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+      JobDetailResponseModel responseModel = await homeRepository.getJobDetailApi(jobId);
+      Get.back();
+
+      if (responseModel.statusCode! == 200) {
+        return responseModel;
+      } else {
+        return null;
+      }
+
+    } on AppError catch (exception) {
+      Get.back();
+      showErrorDialog(exception.message);
+      return null;
+    }
+  }
 
   Future<bool> getJobHistory(
       String startDate, String endDate, bool checkExistJob, int status) async {

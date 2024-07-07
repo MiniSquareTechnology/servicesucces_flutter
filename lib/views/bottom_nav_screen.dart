@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bottom_bar/bottom_bar.dart';
 import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
+import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
+import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/views/history_screen.dart';
 import 'package:employee_clock_in/views/home_screen.dart';
 import 'package:employee_clock_in/views/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -20,9 +23,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   int _currentPage = 0;
   final _pageController = PageController();
 
-
   @override
   initState() {
+    checkNotificationData();
     super.initState();
   }
 
@@ -36,7 +39,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     return WillPopScope(
       onWillPop: () async {
         if (_currentPage == 0) {
-         return showCloseDialog();
+          return showCloseDialog();
         } else {
           _currentPage = 0;
           _pageController.jumpToPage(_currentPage);
@@ -108,7 +111,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     );
   }
 
- Future<bool> showCloseDialog() async {
+  Future<bool> showCloseDialog() async {
     return await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -126,7 +129,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             Navigator.of(context).pop();
-                            await Future.delayed(const Duration(milliseconds: 500));
+                            await Future.delayed(
+                                const Duration(milliseconds: 500));
                             // Get.back();
                             exit(0);
                           },
@@ -138,14 +142,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                       const SizedBox(width: 15),
                       Expanded(
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorPalette.appPrimaryColor,
-                            ),
-                            child: const Text(AppStringConstants.no),
-                          ))
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorPalette.appPrimaryColor,
+                        ),
+                        child: const Text(AppStringConstants.no),
+                      ))
                     ],
                   )
                 ],
@@ -153,5 +157,39 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ),
           );
         });
+  }
+
+  void checkNotificationData() async {
+
+    String? notificationType = await AppPreferenceStorage.getStringValuesSF(
+            AppPreferenceStorage.fcmType);
+    debugPrint("-=>F  $notificationType");
+
+    if(notificationType == null) {
+      return;
+    }
+
+    /// chat type notification
+    if (notificationType.compareTo(AppPreferenceStorage.chatNotification) ==
+        0) {
+      String? jobId = await AppPreferenceStorage.getStringValuesSF(
+          AppPreferenceStorage.fcmJobId);
+      if (jobId != null) {
+        Future.delayed(const Duration(seconds: 2), () {
+          Get.toNamed(RoutePathConstants.historyDetailScreen,
+              arguments: {"id": jobId});
+        });
+      }
+    } else if (notificationType
+            .compareTo(AppPreferenceStorage.urlNotification) ==
+        0) {
+      /// url type notification
+      String? fcmLinkUrl = await AppPreferenceStorage.getStringValuesSF(
+          AppPreferenceStorage.fcmLinkUrl);
+      Future.delayed(const Duration(seconds: 2), () {
+        Get.toNamed(RoutePathConstants.webViewScreen,
+            arguments: {"url": fcmLinkUrl});
+      });
+    }
   }
 }

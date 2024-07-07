@@ -10,5 +10,6 @@ class RoutePathConstants {
   static String forgotPasswordScreen = "/forgotPasswordScreen";
   static String verifyOtpScreen = "/verifyOtpScreen";
   static String resetPasswordScreen = "/resetPasswordScreen";
+  static String webViewScreen = "/webViewScreen";
 
 }

@@ -1,4 +1,5 @@
-import 'package:employee_clock_in/models/job_history_response_model.dart';
+
+import 'package:employee_clock_in/models/job_detail_response_model.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

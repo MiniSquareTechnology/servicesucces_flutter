@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "369153067741",
+    "project_id": "service-success-app",
+    "storage_bucket": "service-success-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369153067741:android:7abcceaad9a50ff7cee934",
+        "android_client_info": {
+          "package_name": "com.hybrid.employee_clock_in.employee_clock_in"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm1TheVepCOTSYFjn6tghG_2034eWzmiQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

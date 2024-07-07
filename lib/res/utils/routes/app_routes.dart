@@ -1,4 +1,4 @@
-import 'package:employee_clock_in/models/job_history_response_model.dart';
+import 'package:employee_clock_in/models/job_detail_response_model.dart';
 import 'package:employee_clock_in/views/bottom_nav_screen.dart';
 import 'package:employee_clock_in/views/change_password_screen.dart';
 import 'package:employee_clock_in/views/comments_list_screen.dart';
@@ -10,6 +10,7 @@ import 'package:employee_clock_in/views/login_screen.dart';
 import 'package:employee_clock_in/views/reset_password_screen.dart';
 import 'package:employee_clock_in/views/splash_screen.dart';
 import 'package:employee_clock_in/views/verify_otp_screen.dart';
+import 'package:employee_clock_in/views/web_view_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'route_path_constants.dart';
@@ -22,7 +23,7 @@ class AppRoutes {
       RoutePathConstants.bottomNavScreen: (context) => const BottomNavScreen(),
       RoutePathConstants.commentsListScreen: (context) {
         Map params = ModalRoute.of(context)!.settings.arguments as Map;
-        return CommentsListScreen(jobData: params['jobData'] as JobHistoryData);
+        return CommentsListScreen(jobData: params['jobData'] as JobDetailResponseModel);
       },
       RoutePathConstants.jobFormScreen: (context) {
         Map params = ModalRoute.of(context)!.settings.arguments as Map;
@@ -46,7 +47,10 @@ class AppRoutes {
           const HistoryFiltersScreen(),
       RoutePathConstants.historyDetailScreen: (context) {
         Map params = ModalRoute.of(context)!.settings.arguments as Map;
-        return HistoryDetailScreen(data: params['data'] as JobHistoryData);
+        return HistoryDetailScreen(jobId: params['id']);
+      }, RoutePathConstants.webViewScreen: (context) {
+        Map params = ModalRoute.of(context)!.settings.arguments as Map;
+        return WebViewScreen(url: params['url']);
       },
     };
   }
