@@ -62,18 +62,22 @@ class FirebaseNotifications {
     //   debugPrint('Device APNToken FCM: $value');
     // });
 
-    firebaseMessaging.getToken().then((token) {
-      debugPrint('Device Token FCM: $token');
-      AppPreferenceStorage.setStringValuesSF(
-          AppPreferenceStorage.fcmToken, token ?? '');
-    });
 
+    getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       AppLogger.logMessage("Message title:-->> ${message.toMap()}");
       showNotification(message, false);
     });
 
     handleForeGroundClick();
+  }
+
+  static Future<String?> getToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    debugPrint('Device Token FCM: $token');
+    AppPreferenceStorage.setStringValuesSF(
+        AppPreferenceStorage.fcmToken, token ?? '');
+    return token;
   }
 
   static void onDidReceiveLocalNotification(
@@ -101,10 +105,6 @@ class FirebaseNotifications {
       );
     }
     AppLogger.logMessage("Notification ");
-  }
-
-  static getToken() async {
-    return await FirebaseMessaging.instance.getToken();
   }
 
   static void handleForeGroundClick() async {

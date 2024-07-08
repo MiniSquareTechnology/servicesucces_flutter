@@ -32,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     authViewModel = Get.find(tag: AppBinding.authViewModelTag);
     authViewModel.resetValues();
+    authViewModel.getFcmToken();
     super.initState();
   }
 

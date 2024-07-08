@@ -1,4 +1,5 @@
 import 'package:employee_clock_in/data/repository/auth_repository.dart';
+import 'package:employee_clock_in/data/services/firebase_notifications.dart';
 import 'package:employee_clock_in/models/forgot_password_response_model.dart';
 import 'package:employee_clock_in/models/login_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
@@ -10,7 +11,7 @@ import 'package:get/get.dart';
 
 class AuthViewModel extends GetxController {
   AuthRepository authRepository = AuthRepository();
-
+  String fcmToken = '';
   /// login
   var passwordObscure = true.obs;
 
@@ -53,13 +54,20 @@ class AuthViewModel extends GetxController {
     confirmPasswordObscure.value = true;
   }
 
+  getFcmToken() async {
+    fcmToken = await AppPreferenceStorage.getStringValuesSF(
+        AppPreferenceStorage.fcmToken) ??
+        '';
+    if(fcmToken.isEmpty) {
+      fcmToken = await FirebaseNotifications.getToken() ?? '';
+    }
+  }
+
   Future<bool> emailLogin(String email, String password) async {
     try {
       CustomDialogs.showLoadingDialog(
           Get.context!, "${AppStringConstants.loading}...");
-      String fcmToken = await AppPreferenceStorage.getStringValuesSF(
-              AppPreferenceStorage.fcmToken) ??
-          '';
+
       Map<String, String> params = {
         "email": email,
         "password": password,
