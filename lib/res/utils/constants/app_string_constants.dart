@@ -86,4 +86,8 @@ class AppStringConstants {
   static const String seeAll = "See All";
   static const String addComment = "Add Comment";
   static const String admin = "Admin";
+
+  static const String tripHome = "Trip Home";
+  static const String standBy = "Stand By";
+  static const String inMeeting = "In Meeting";
 }

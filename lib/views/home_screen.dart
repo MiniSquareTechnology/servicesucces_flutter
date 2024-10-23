@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:employee_clock_in/data/binding/app_binding.dart';
 import 'package:employee_clock_in/data/services/check_internet_service.dart';
 import 'package:employee_clock_in/data/services/location_service.dart';
@@ -13,6 +12,7 @@ import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
 import 'package:employee_clock_in/res/utils/theme/color_palette.dart';
 import 'package:employee_clock_in/view_models/home_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -369,6 +369,54 @@ class _HomeScreenState extends State<HomeScreen>
               ],
             ),
           ),
+          floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: Obx(() => homeViewModel.timerText.value.isEmpty
+              ? ExpandableFab(
+            type: ExpandableFabType.up,
+            childrenAnimation: ExpandableFabAnimation.none,
+            distance: 70,
+            overlayStyle: ExpandableFabOverlayStyle(
+              color: Colors.white.withOpacity(0.9),
+            ),
+            openButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(Icons.timer),
+              fabSize: ExpandableFabSize.regular,
+              foregroundColor: Colors.white,
+              backgroundColor: ColorPalette.appPrimaryColor,
+              shape: const CircleBorder(),
+            ),
+            closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+              child: const Icon(Icons.close),
+              fabSize: ExpandableFabSize.small,
+              foregroundColor: Colors.white,
+              backgroundColor: ColorPalette.appPrimaryColor,
+              shape: const CircleBorder(),
+            ),
+            children: [
+              FloatingActionButton.extended(
+                heroTag: null,
+                backgroundColor: ColorPalette.appPrimaryColor,
+                label: const Text(AppStringConstants.tripHome),
+                onPressed: () {},
+              ),
+              FloatingActionButton.extended(
+                heroTag: null,
+                backgroundColor: ColorPalette.appPrimaryColor,
+                label: const Text(AppStringConstants.standBy),
+                onPressed: () {},
+              ),
+              FloatingActionButton.extended(
+                heroTag: null,
+                backgroundColor: ColorPalette.appPrimaryColor,
+                label: const Text(AppStringConstants.inMeeting),
+                onPressed: () {},
+              ),
+            ],
+          )
+              : const SizedBox(
+            height: 0,
+            width: 0,
+          )),
         ),
       ),
     );
@@ -605,4 +653,9 @@ class _HomeScreenState extends State<HomeScreen>
     Get.toNamed(RoutePathConstants.jobFormScreen,
         arguments: {"formType": formType});
   }
+
 }
+
+
+
+

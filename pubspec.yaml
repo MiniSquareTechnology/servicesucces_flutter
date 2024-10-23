@@ -28,6 +28,7 @@ dependencies:
   firebase_messaging:
   flutter_local_notifications:
   webview_flutter:
+  flutter_expandable_fab: ^2.3.0
 
 dev_dependencies:
   flutter_test:
