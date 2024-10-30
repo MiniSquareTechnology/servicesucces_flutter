@@ -73,11 +73,16 @@ class FirebaseNotifications {
   }
 
   static Future<String?> getToken() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    debugPrint('Device Token FCM: $token');
-    AppPreferenceStorage.setStringValuesSF(
-        AppPreferenceStorage.fcmToken, token ?? '');
-    return token;
+   try {
+     String? token = await FirebaseMessaging.instance.getToken();
+     debugPrint('Device Token FCM: $token');
+     AppPreferenceStorage.setStringValuesSF(
+         AppPreferenceStorage.fcmToken, token ?? '');
+     return token;
+   } catch (exception) {
+     debugPrint("FCM EE:- ${exception.toString()}");
+     return "";
+   }
   }
 
   static void onDidReceiveLocalNotification(

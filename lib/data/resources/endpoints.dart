@@ -79,6 +79,12 @@ class ApiJobEndPoints {
       method: RequestType.Post,
       needsAuthorization: true);
 
+
+  final ApiEndpoint addTimer = ApiEndpoint(
+      path: "trip",
+      method: RequestType.Post,
+      needsAuthorization: true);
+
 /*  final ApiEndpoint addUpdatePlumbingJobForm = ApiEndpoint(
       path: "add-update-job-form-plumbing",
       method: RequestType.Post,

@@ -4,8 +4,10 @@ import 'package:employee_clock_in/data/services/check_internet_service.dart';
 import 'package:employee_clock_in/data/services/location_service.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
+import 'package:employee_clock_in/res/utils/constants/app_user_role.dart';
 import 'package:employee_clock_in/res/utils/extensions/address_from_lat_lon.dart';
 import 'package:employee_clock_in/res/utils/extensions/common_sized_box.dart';
+import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/local_storage/image_storage.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
 import 'package:employee_clock_in/res/utils/routes/route_path_constants.dart';
@@ -157,35 +159,38 @@ class _HomeScreenState extends State<HomeScreen>
                 Container(
                   width: 1.0.sw,
                   alignment: Alignment.center,
-                  child: Obx(() => homeViewModel.timerText.value.isEmpty
-                      ? Column(
-                          children: [
-                            Text(
-                              DateFormat().add_jm().format(DateTime.now()),
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 28.sp,
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Obx(() => Text(
-                                  homeViewModel.currentDate.value,
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12.sp,
-                                      fontStyle: FontStyle.normal,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ],
-                        )
-                      : Text(
-                          homeViewModel.timerText.value,
+                  child: Obx(() {
+                    // debugPrint("T Val:-=> ${homeViewModel.timerText.value}");
+                    return homeViewModel.timerText.value.isEmpty
+                        ? Column(
+                      children: [
+                        Text(
+                          DateFormat().add_jm().format(DateTime.now()),
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 30.sp,
+                              fontSize: 28.sp,
                               fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w600),
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Obx(() => Text(
+                          homeViewModel.currentDate.value,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500),
                         )),
+                      ],
+                    )
+                        : Text(
+                      homeViewModel.timerText.value,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30.sp,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w600),
+                    );
+                  }),
                 ),
                 context.getCommonSizedBox,
                 // context.getCommonSizedBox,
@@ -397,19 +402,27 @@ class _HomeScreenState extends State<HomeScreen>
                 heroTag: null,
                 backgroundColor: ColorPalette.appPrimaryColor,
                 label: const Text(AppStringConstants.tripHome),
-                onPressed: () {},
+                onPressed: () {
+                  getLocation(() {
+                    homeViewModel.addTimerRequest(AppUserRole.typeTrip, lat, long, address ?? '');
+                  });
+                },
               ),
               FloatingActionButton.extended(
                 heroTag: null,
                 backgroundColor: ColorPalette.appPrimaryColor,
                 label: const Text(AppStringConstants.standBy),
-                onPressed: () {},
+                onPressed: () {
+                  homeViewModel.addTimerRequest(AppUserRole.typeStandBy, '', '', '');
+                },
               ),
               FloatingActionButton.extended(
                 heroTag: null,
                 backgroundColor: ColorPalette.appPrimaryColor,
                 label: const Text(AppStringConstants.inMeeting),
-                onPressed: () {},
+                onPressed: () {
+                  homeViewModel.addTimerRequest(AppUserRole.typeMeeting, '', '', '');
+                },
               ),
             ],
           )
@@ -494,7 +507,23 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  void mainBtnClick() {
+  void mainBtnClick() async {
+    /// add timer data check here
+    int? existTimerType = await AppPreferenceStorage.getIntValuesSF(
+        AppPreferenceStorage.addTimerType);
+    if (existTimerType != null) {
+      if (existTimerType == 1) {
+        getLocation(() {
+          homeViewModel.addTimerRequest(
+              AppUserRole.typeTrip, lat, long, address ?? '');
+        });
+      } else {
+        homeViewModel.addTimerRequest(existTimerType, '', '', '');
+      }
+      return;
+    }
+
+    /// main work start and update timer check here
     if (homeViewModel.checkInStart.value) {
       if (homeViewModel.buttonStatus.value
               .compareTo(AppStringConstants.clickToArrive) ==
@@ -531,6 +560,7 @@ class _HomeScreenState extends State<HomeScreen>
         });
       }
     } else {
+      debugPrint("Start Again -=>");
       /*requestLocationBottomSheet*/ getLocation(() {
         CustomDialogs.punchInDialog(Get.context!, customerNameController,
             serviceTitanNumController, _formKey, () {

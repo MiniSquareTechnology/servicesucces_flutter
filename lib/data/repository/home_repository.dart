@@ -2,6 +2,7 @@ import 'package:employee_clock_in/data/resources/endpoints.dart';
 import 'package:employee_clock_in/data/services/http_client.dart';
 import 'package:employee_clock_in/models/add_comment_response_model.dart';
 import 'package:employee_clock_in/models/add_job_response_model.dart';
+import 'package:employee_clock_in/models/add_timer_response_model.dart';
 import 'package:employee_clock_in/models/job_detail_response_model.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 
@@ -15,6 +16,14 @@ class HomeRepository {
       apiEndpoint: ApiEndpointProvider().homeEndPoints.addJob,
       body: params,
       responseConverter: (json) => AddJobResponseModel.fromJson(json),
+    );
+  }
+
+  Future<AddTimerResponseModel> addTimerApi(Map<String, String> params) async {
+    return await iClient.handleRequest(
+      apiEndpoint: ApiEndpointProvider().homeEndPoints.addTimer,
+      body: params,
+      responseConverter: (json) => AddTimerResponseModel.fromJson(json),
     );
   }
 

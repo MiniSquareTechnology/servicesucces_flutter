@@ -403,6 +403,16 @@ class _JobFormScreenState extends State<JobFormScreen> {
               index: 0,
               onTap: (index) {
                 homeViewModel.updateIsLead();
+              }),
+          SizedBox(
+            height: 6.h,
+          ),
+          CheckBoxWidget(
+              label: AppStringConstants.isSoldVip,
+              selected: homeViewModel.isSoldVip.value,
+              index: 0,
+              onTap: (index) {
+                homeViewModel.updateIsSoldVip();
               })
         ],
       );

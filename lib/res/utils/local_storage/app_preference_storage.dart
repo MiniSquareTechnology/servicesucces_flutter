@@ -44,6 +44,9 @@ class AppPreferenceStorage {
   static String totalTime = 'totalTime';
   static String checkInTime = 'CheckInTime';
 
+  static String addTimerType = 'addTimerType';
+  static String addTimerId = 'addTimerId';
+
   static setStringValuesSF(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);

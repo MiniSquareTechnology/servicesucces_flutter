@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:employee_clock_in/data/repository/home_repository.dart';
 import 'package:employee_clock_in/models/add_comment_response_model.dart';
 import 'package:employee_clock_in/models/add_job_response_model.dart';
+import 'package:employee_clock_in/models/add_timer_response_model.dart';
 import 'package:employee_clock_in/models/job_detail_response_model.dart';
 import 'package:employee_clock_in/models/job_history_response_model.dart';
 import 'package:employee_clock_in/res/custom_widgets/custom_dialogs.dart';
 import 'package:employee_clock_in/res/utils/constants/app_string_constants.dart';
+import 'package:employee_clock_in/res/utils/constants/app_user_role.dart';
 import 'package:employee_clock_in/res/utils/error/app_error.dart';
 import 'package:employee_clock_in/res/utils/local_storage/app_preference_storage.dart';
 import 'package:employee_clock_in/res/utils/logger/app_logger.dart';
@@ -53,16 +55,25 @@ class HomeViewModel extends GetxController {
   // The result which will be displayed on the screen
   final Rx<String> timerText = ''.obs;
   RxBool isLead = false.obs;
+  RxBool isSoldVip = false.obs;
 
   // History List
   List<JobHistoryData> historyList = <JobHistoryData>[].obs;
   Map<String, String> jobStatusList = <String, String>{
-    "1": AppStringConstants.pending,
-    "2": AppStringConstants.warmLead,
+    // "1": AppStringConstants.pending,
+    // "2": AppStringConstants.warmLead,
+    // "3": AppStringConstants.noSale,
+    // "4": AppStringConstants.noContact,
+    // "5": AppStringConstants.cancelled,
+    // "6": AppStringConstants.sold
+
+    /// new
+    "1": AppStringConstants.jobStarted,
+    "2": AppStringConstants.phase2,
     "3": AppStringConstants.noSale,
-    "4": AppStringConstants.noContact,
     "5": AppStringConstants.cancelled,
-    "6": AppStringConstants.sold
+    "6": AppStringConstants.soldPending,
+    "7": AppStringConstants.jobFunded,
   };
 
   List<int> jobPercentageList = [5, 7, 8, 10];
@@ -79,7 +90,6 @@ class HomeViewModel extends GetxController {
   RxList<int> plumbingCheckListSelected = <int>[].obs;
   RxList<int> form3ListSelected = <int>[].obs;
   RxList<int> jobStatusListFilterSelected = <int>[-1].obs;
-
 
   @override
   void update([List<Object>? ids, bool condition = true]) {}
@@ -104,7 +114,7 @@ class HomeViewModel extends GetxController {
             AppPreferenceStorage.userRole) ??
         0;
     userId.value = await AppPreferenceStorage.getStringValuesSF(
-        AppPreferenceStorage.userId) ??
+            AppPreferenceStorage.userId) ??
         "";
   }
 
@@ -138,17 +148,21 @@ class HomeViewModel extends GetxController {
     }
   }*/
 
-  void setCheckInTime(String customerName, String serviceTitanNumber,
-      String address, String lat, String long) {
+  setStartData(String btnText) {
     _simulatedElapsedTime = Duration.zero;
     punchIn = DateTime.now();
     checkInTimer.value = DateFormat().add_jm().format(punchIn!);
-    _start();
+    _startTimer();
     checkInStart.value = true;
-    buttonStatus.value = AppStringConstants.clickToArrive;
+    buttonStatus.value = btnText;
     totalHours.value = "--:--";
     checkOutTimer.value = "--:--";
     commissionPercentSelectValue.value = AppStringConstants.select;
+  }
+
+  void setCheckInTime(String customerName, String serviceTitanNumber,
+      String address, String lat, String long) {
+    setStartData(AppStringConstants.clickToArrive);
 
     ///
     addJobRequest(customerName, serviceTitanNumber, address, lat, long);
@@ -186,7 +200,7 @@ class HomeViewModel extends GetxController {
     DateTime now = DateTime.now();
     punchOut = now;
     checkOutTimer.value = DateFormat().add_jm().format(now);
-    _reset();
+    _resetTimer();
     buttonStatus.value = AppStringConstants.clickToDispatch;
     checkInStart.value = false;
     showArrival.value = false;
@@ -229,7 +243,7 @@ class HomeViewModel extends GetxController {
   }
 
   // This function will be called when the user presses the Start button
-  void _start() {
+  void _startTimer() {
     // Timer.periodic() will call the callback function every 100 milliseconds
     _timer = Timer.periodic(const Duration(milliseconds: 1000), (Timer t) {
       // Update the UI
@@ -242,14 +256,14 @@ class HomeViewModel extends GetxController {
   }
 
   // This function will be called when the user presses the Stop button
-  void _stop() {
+  void _stopTimer() {
     _timer.cancel();
     _stopwatch.stop();
   }
 
   // This function will be called when the user presses the Reset button
-  void _reset() {
-    _stop();
+  void _resetTimer() {
+    _stopTimer();
     _stopwatch.reset();
     _simulatedElapsedTime = Duration.zero;
   }
@@ -277,6 +291,10 @@ class HomeViewModel extends GetxController {
 
   void updateIsLead() {
     isLead.value = !isLead.value;
+  }
+
+  void updateIsSoldVip() {
+    isSoldVip.value = !isSoldVip.value;
   }
 
   void updateShowPercent(bool res) {
@@ -307,6 +325,88 @@ class HomeViewModel extends GetxController {
             AppPreferenceStorage.serviceTitanNumber, serviceTitanNumber);
         AppPreferenceStorage.setStringValuesSF(AppPreferenceStorage.jobId,
             addJobResponseModel.data!.id!.toString());
+        return true;
+      } else {
+        return false;
+      }
+    } on AppError catch (exception) {
+      Get.back();
+      AppLogger.logMessage("------>>>> ${exception.code}");
+      showErrorDialog(exception.message);
+      return false;
+    }
+  }
+
+  Future<bool> addTimerRequest(
+      int type, String lat, String long, String address) async {
+    try {
+      CustomDialogs.showLoadingDialog(
+          Get.context!, "${AppStringConstants.loading}...");
+
+      int? existTimerId = await AppPreferenceStorage.getIntValuesSF(
+          AppPreferenceStorage.addTimerId);
+
+      Map<String, String> params = {
+        "type": "$type",
+      };
+
+      if (existTimerId != null) {
+        params.addAll({"id": "$existTimerId"});
+        if (type == 1) {
+          params.addAll({
+            "end_lat": lat,
+            "end_long": long,
+            "end_address": address,
+          });
+        }
+      } else {
+        if (type == 1) {
+          params.addAll({
+            "start_lat": lat,
+            "start_long": long,
+            "start_address": address,
+          });
+        }
+      }
+
+      AddTimerResponseModel addTimerResponseModel =
+          await homeRepository.addTimerApi(params);
+      Get.back();
+      if (addTimerResponseModel.statusCode! == 200) {
+        /// delete keys
+        if (existTimerId != null) {
+          AppPreferenceStorage.deleteKey(AppPreferenceStorage.addTimerType);
+          AppPreferenceStorage.deleteKey(AppPreferenceStorage.addTimerId);
+
+          /// reset screen UI and data
+          _resetTimer();
+          buttonStatus.value = AppStringConstants.clickToDispatch;
+          checkInStart.value = false;
+          showArrival.value = false;
+          totalHours.value = "--:--";
+          checkInTimer.value = "--:--";
+          checkOutTimer.value = "--:--";
+
+          /// clear timer text
+          timerText.value = "";
+
+          debugPrint("T Val:-=> 000");
+        } else {
+          /// start timer
+          setStartData(type == AppUserRole.typeTrip
+              ? AppStringConstants.stopTrip
+              : type == AppUserRole.typeStandBy
+                  ? AppStringConstants.stopStand
+                  : AppStringConstants.stopMeeting);
+
+          checkInTimer.value = "--:--";
+
+          /// save keys
+          AppPreferenceStorage.setIntValuesSF(
+              AppPreferenceStorage.addTimerType, type);
+          AppPreferenceStorage.setIntValuesSF(
+              AppPreferenceStorage.addTimerId, addTimerResponseModel.data ?? 0);
+        }
         return true;
       } else {
         return false;
@@ -366,7 +466,8 @@ class HomeViewModel extends GetxController {
         // calculated amount
         "job_id": jobId,
         "job_form_type": "${userRole.value}",
-        "is_lead" : isLead.value ? "1" : "0"
+        "is_lead": isLead.value ? "1" : "0",
+        "is_sold_vip": isSoldVip.value ? "1" : "0"
       };
 
       if (userRole.value == 7) {
@@ -503,7 +604,8 @@ class HomeViewModel extends GetxController {
     try {
       CustomDialogs.showLoadingDialog(
           Get.context!, "${AppStringConstants.loading}...");
-      JobDetailResponseModel responseModel = await homeRepository.getJobDetailApi(jobId);
+      JobDetailResponseModel responseModel =
+          await homeRepository.getJobDetailApi(jobId);
       Get.back();
 
       if (responseModel.statusCode! == 200) {
@@ -511,7 +613,6 @@ class HomeViewModel extends GetxController {
       } else {
         return null;
       }
-
     } on AppError catch (exception) {
       Get.back();
       showErrorDialog(exception.message);
@@ -540,7 +641,7 @@ class HomeViewModel extends GetxController {
         historyList.clear();
         historyList.addAll(jobHistoryResponseModel.data ?? <JobHistoryData>[]);
         if (checkExistJob && historyList.isNotEmpty) {
-          setExistingJobData();
+          setExistingJobData(jobHistoryResponseModel);
         }
         return true;
       } else {
@@ -553,7 +654,8 @@ class HomeViewModel extends GetxController {
     }
   }
 
-  Future<AddCommentResponseModel?> addJobComment(String jobId, String comment) async {
+  Future<AddCommentResponseModel?> addJobComment(
+      String jobId, String comment) async {
     try {
       CustomDialogs.showLoadingDialog(
           Get.context!, "${AppStringConstants.loading}...");
@@ -584,7 +686,8 @@ class HomeViewModel extends GetxController {
     });
   }
 
-  void setExistingJobData() {
+  void setExistingJobData(JobHistoryResponseModel jobHistoryResponseModel) {
+    /// set normal job existing data
     if (historyList.elementAt(0).checkoutTime == null &&
         historyList.elementAt(0).dispatchTime != null) {
       punchIn = DateTime.parse(historyList.elementAt(0).dispatchTime!);
@@ -619,7 +722,59 @@ class HomeViewModel extends GetxController {
           "-=> ${historyList.elementAt(0).dispatchTime!} ${DateTime.now().difference(now).inHours}, ${DateTime.now().difference(now).inMinutes}");
       _simulatedElapsedTime =
           Duration(milliseconds: DateTime.now().difference(now).inMilliseconds);
-      _start();
+      _startTimer();
+
+      /// set form data
+      if (historyList.elementAt(0).jobForm != null &&
+          historyList.elementAt(0).jobForm!.isNotEmpty) {
+        HistoryJobForm jobForm = historyList.elementAt(0).jobForm!.first;
+        amountCollectedController.value.text = "${jobForm.totalAmount}";
+        commissionPercentSelectValue.value = "${jobForm.comission}";
+        showPercent.value = true;
+        commissionController.value.text = "${jobForm.comissionAmount}";
+        isLead.value = jobForm.isLead! == 0 ? false : true;
+        isSoldVip.value = jobForm.isSoldVip! == 0 ? false : true;
+      }
+    }
+
+    /// set trip existing data
+    if (jobHistoryResponseModel.ongoingTrip != null) {
+      DateTime dateTime =
+          DateTime.parse(jobHistoryResponseModel.ongoingTrip!.createdAt!)
+              .toUtc();
+
+      dateTime = dateTime.add(const Duration(hours: 5, minutes: 30));
+
+      DateTime dateLocal = dateTime;
+      punchIn = dateLocal;
+      checkInTimer.value = DateFormat().add_jm().format(punchIn!);
+      totalHours.value = "--:--";
+      checkOutTimer.value = "--:--";
+
+      DateTime now = dateLocal;
+      checkInStart.value = true;
+
+      // _reset();
+      _simulatedElapsedTime = Duration.zero;
+      debugPrint(
+          "DD-=>$dateLocal ,, ${DateTime.now()} ${DateTime.now().difference(now).inHours}, ${DateTime.now().difference(now).inMinutes}");
+      _simulatedElapsedTime =
+          Duration(milliseconds: DateTime.now().difference(now).inMilliseconds);
+      _startTimer();
+
+      buttonStatus.value = (jobHistoryResponseModel.ongoingTrip!.type ?? 1) ==
+              AppUserRole.typeTrip
+          ? AppStringConstants.stopTrip
+          : (jobHistoryResponseModel.ongoingTrip!.type ?? 1) ==
+                  AppUserRole.typeStandBy
+              ? AppStringConstants.stopStand
+              : AppStringConstants.stopMeeting;
+
+      /// save keys
+      AppPreferenceStorage.setIntValuesSF(AppPreferenceStorage.addTimerType,
+          jobHistoryResponseModel.ongoingTrip!.type ?? 0);
+      AppPreferenceStorage.setIntValuesSF(AppPreferenceStorage.addTimerId,
+          jobHistoryResponseModel.ongoingTrip!.id ?? 0);
     }
   }
 }

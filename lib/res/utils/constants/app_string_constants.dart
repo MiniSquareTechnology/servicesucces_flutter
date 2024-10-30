@@ -30,6 +30,7 @@ class AppStringConstants {
   static const String commissionPercent = "Commission Percent";
   static const String task = "Task";
   static const String setALead = "Set a Lead ?";
+  static const String isSoldVip = "Is Sold VIP";
   static const String commission = "Commission";
   static const String jobTotal = "Job Total";
   static const String jobPercentage = "Job Percentage";
@@ -75,6 +76,11 @@ class AppStringConstants {
   static const String cancelled = "Cancelled";
   static const String sold = "Sold";
 
+  static const String jobStarted = "Job Started";
+  static const String phase2 = "Phase 2";
+  static const String soldPending = "Sold - Pending";
+  static const String jobFunded = "Job Funded";
+
   static const String iSoldIt = "I Sold it";
   static const String iDidIt = "I Did it";
   static const String iSetLead = "I Set the Lead";
@@ -90,4 +96,7 @@ class AppStringConstants {
   static const String tripHome = "Trip Home";
   static const String standBy = "Stand By";
   static const String inMeeting = "In Meeting";
+  static const String stopTrip = "Stop Trip";
+  static const String stopStand = "Stop Stand By";
+  static const String stopMeeting = "Stop Meeting";
 }
