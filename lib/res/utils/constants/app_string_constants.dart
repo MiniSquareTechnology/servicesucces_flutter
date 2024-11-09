@@ -96,7 +96,7 @@ class AppStringConstants {
   static const String tripHome = "Trip Home";
   static const String standBy = "Stand By";
   static const String inMeeting = "In Meeting";
-  static const String stopTrip = "Stop Trip";
+  static const String stopTrip = "Stop Trip Home";
   static const String stopStand = "Stop Stand By";
   static const String stopMeeting = "Stop Meeting";
 }
